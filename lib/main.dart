@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'routes.dart';
 
 import 'view/screens/main_page.dart';
+import 'view/screens/welcome_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -17,6 +18,7 @@ class MyApp extends StatelessWidget {
       title: 'حمل و نقل آمادیار',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        fontFamily: 'SamimFD'
       ),
       builder: (context, child) {
         return Directionality(
@@ -24,9 +26,10 @@ class MyApp extends StatelessWidget {
           child: Container(child: child)
         );
       },
-      initialRoute: PageRoutes.mainPage,
+      initialRoute: PageRoutes.welcomeScreen,
       routes: {
-        PageRoutes.mainPage: (ctx) => MainPage(),
+        PageRoutes.welcomeScreen: (ctx) => WelcomeScreen(),
+        PageRoutes.mainPage: (ctx) => const MainPage(),
       }
     );
   }

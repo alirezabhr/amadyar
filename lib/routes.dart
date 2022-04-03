@@ -1,3 +1,4 @@
 class PageRoutes {
-  static String mainPage = "/";
+  static String welcomeScreen = "/";
+  static String mainPage = "/main";
 }
