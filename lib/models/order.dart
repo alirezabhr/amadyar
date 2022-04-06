@@ -1,4 +1,7 @@
 
+import 'package:amadyar/models/storage.dart';
+import 'package:amadyar/models/store.dart';
+
 enum OrderStatus {
   COMPLETE,
   IN_PROGRESS,
@@ -8,8 +11,8 @@ enum OrderStatus {
 
 class Order{
 
-  String storage;
-  String store;
+  Storage storage;
+  Store store;
   String title;
   OrderStatus status;
   int weight;
