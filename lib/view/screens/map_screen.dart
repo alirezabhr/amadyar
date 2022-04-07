@@ -3,6 +3,8 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:latlong2/latlong.dart';
 
+import '../widgets/map_north_button.dart';
+
 class MapScreen extends StatefulWidget {
   const MapScreen({Key? key}) : super(key: key);
 
@@ -19,12 +21,8 @@ class _MapScreenState extends State<MapScreen> {
   LatLng _mapCenter = LatLng(29.64, 52.48);
   double _zoom = 13;
 
-  Marker myLocationMarker = Marker(
-    point: LatLng(29.64, 52.48),
-    width: 100,
-    height: 100,
-    builder: (context) => Image.asset('assets/images/delivery_truck_24_24.png'),
-  );
+  late LatLng _myLocation;
+  late Marker _myLocationMarker;
 
   List<Marker> _destinationsMarkers = [];
 
@@ -66,6 +64,14 @@ class _MapScreenState extends State<MapScreen> {
 
   @override
   void initState() {
+    _myLocation = LatLng(29.64, 52.48);
+    _myLocationMarker = Marker(
+      point: _myLocation,
+      width: 100,
+      height: 100,
+      builder: (context) => Image.asset('assets/images/delivery_truck_24_24.png'),
+    );
+
     _destinationsMarkers = [LatLng(29.64, 52.492)]
         .map((point) => Marker(
               point: point,
@@ -112,7 +118,7 @@ class _MapScreenState extends State<MapScreen> {
                   ),
                   MarkerLayerOptions(
                     markers: [
-                      myLocationMarker,
+                      _myLocationMarker,
                       ..._destinationsMarkers,
                     ],
                   )
@@ -127,38 +133,7 @@ class _MapScreenState extends State<MapScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          SizedBox.fromSize(
-                            // set button size
-                            size: const Size(44, 44),
-                            child: ClipOval(
-                              // make button shape circle
-                              child: Material(
-                                color: Theme.of(context).colorScheme.secondary,
-                                child: InkWell(
-                                  onTap: _northButtonEvent,
-                                  child: Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.center,
-                                    children: const <Widget>[
-                                      Icon(
-                                        Icons.navigation_outlined,
-                                        size: 18,
-                                        color: Colors.white,
-                                      ), // icon
-                                      Text(
-                                        'N',
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 12,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
+                          MapNorthButton(event: _northButtonEvent),
                           Text(
                             '$_estimatedDistance  km',
                             style: const TextStyle(
