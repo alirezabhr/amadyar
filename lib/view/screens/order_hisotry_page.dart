@@ -1,4 +1,4 @@
-import 'package:amadyar/widgets/order_history_card.dart';
+import 'package:amadyar/view/widgets/order_history_card.dart';
 import 'package:flutter/material.dart';
 import '../../dummy_data/dummy_orders.dart';
 

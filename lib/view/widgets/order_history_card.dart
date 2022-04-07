@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
-import '../models/order.dart';
+import '../../models/order.dart';
 
 class OrderHistoryCard extends StatelessWidget {
 
   final Map<OrderStatus, Map<String, Object>> map = const {
     OrderStatus.COMPLETE: {
-      'color': Color.fromARGB(255, 149, 211, 151),
+      'color': Color.fromARGB(255, 153, 241, 156),
       'text': 'CP'
     },
     OrderStatus.BACKLOG: {
-      'color': Color.fromARGB(255, 221, 214, 121),
+      'color': Color.fromARGB(255, 247, 238, 125),
       'text': 'BL'
     },
     OrderStatus.IN_PROGRESS: {
-      'color': Color.fromARGB(255, 120, 204, 219),
+      'color': Color.fromARGB(255, 133, 235, 253),
       'text': 'IP'
     },
     OrderStatus.MISSED: {
-      'color': Color.fromARGB(255, 190, 150, 223),
+      'color': Color.fromARGB(255, 253, 161, 161),
       'text': 'MI'
     },
   };
@@ -60,7 +60,7 @@ class OrderHistoryCard extends StatelessWidget {
                 ),
                 Align(
                   alignment: Alignment.centerLeft,
-                  child: Text("${map[order.status]!["text"]}", style: TextStyle(fontSize: 20),),
+                  child: Text("${map[order.status]!["text"]}", style: TextStyle(fontSize: 10),),
                 ),
               ],
             ),

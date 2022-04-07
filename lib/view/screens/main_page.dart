@@ -1,3 +1,6 @@
+import 'package:amadyar/view/screens/map_screen.dart';
+import 'package:amadyar/view/screens/order_hisotry_page.dart';
+import 'package:amadyar/view/widgets/order_history_card.dart';
 import 'package:flutter/material.dart';
 
 class MainPage extends StatefulWidget {
@@ -12,7 +15,7 @@ class _MainPageState extends State<MainPage> {
     {
       'title': 'نقشه',
       'icon': Icons.map,
-      'page': Container(color: Colors.deepOrange,),
+      'page': MapScreen(),
     },
     {
       'title': 'todo',
@@ -21,8 +24,8 @@ class _MainPageState extends State<MainPage> {
     },
     {
       'title': 'سفارشات',
-      'icon': Icons.check,
-      'page': Container(color: Colors.black),
+      'icon': Icons.assignment,
+      'page': HistoryPage(),
     },
     {
       'title': 'پروفایل',
