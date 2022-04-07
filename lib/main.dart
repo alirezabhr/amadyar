@@ -21,8 +21,8 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSwatch(
           primarySwatch: Colors.green,
         ).copyWith(
-            secondary: const Color(0xffb0d4f4),
-            tertiary: const Color(0xff3461f3)
+            secondary: Colors.blueAccent,
+            tertiary: const Color(0xDFE5F2FA)
         ),
       ),
       builder: (context, child) {
