@@ -31,7 +31,7 @@ class OrderHistoryCard extends StatelessWidget {
         width: double.infinity,
         padding: const EdgeInsets.only(top: 4, bottom: 0, left: 4, right: 4),
         child: Card(       
-          color: map[order.status]!['color'] as Color,
+          color: map[order.status]!["color"] as Color,
           child: Padding(
             padding: const EdgeInsets.all(8),
             child: Column(
@@ -44,8 +44,9 @@ class OrderHistoryCard extends StatelessWidget {
                     Text("مقصد: ${order.store.address}"),
                     Text("مرسوله: ${order.title}"),
                     Text("وزن: ${order.weight}"),
-                    Text("${order.startTw}"),
-                    Text("${order.endTw}"),
+                    //TODO: make dates shamsi
+                    Text("${order.startTw}", textDirection: TextDirection.rtl,),
+                    Text("${order.endTw}", textDirection: TextDirection.rtl,),
                   ].map(
                   (e) => Padding(
                     padding: const EdgeInsets.all(4),
@@ -59,7 +60,7 @@ class OrderHistoryCard extends StatelessWidget {
                 ),
                 Align(
                   alignment: Alignment.centerLeft,
-                  child: Text("${order.status}"),
+                  child: Text("${map[order.status]!["text"]}", style: TextStyle(fontSize: 20),),
                 ),
               ],
             ),
