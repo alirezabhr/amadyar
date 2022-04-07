@@ -1,7 +1,9 @@
-import 'package:amadyar/view/screens/map_screen.dart';
-import 'package:amadyar/view/screens/order_hisotry_page.dart';
-import 'package:amadyar/view/widgets/order_history_card.dart';
 import 'package:flutter/material.dart';
+
+import 'map_screen.dart';
+import 'cartable_screen.dart';
+import 'orders_screen.dart';
+import 'profile_screen.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -13,24 +15,28 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   final List<Map<String, dynamic>> _navbarItems = [
     {
+      'appbarTitle': '',
       'title': 'نقشه',
-      'icon': Icons.map,
-      'page': MapScreen(),
+      'icon': const Icon(Icons.map),
+      'page': const MapScreen(),
     },
     {
-      'title': 'todo',
-      'icon': Icons.timer_outlined,
-      'page': Container(color: Colors.yellow),
+      'appbarTitle': 'سفارش‌های آتی',
+      'title': 'کارتابل',
+      'icon': const Icon(Icons.timer_outlined),
+      'page': const CartableScreen(),
     },
     {
+      'appbarTitle': 'سفارشات',
       'title': 'سفارشات',
-      'icon': Icons.assignment,
-      'page': HistoryPage(),
+      'icon': const Icon(Icons.assignment),
+      'page': const OrdersScreen(),
     },
     {
+      'appbarTitle': 'پروفایل و پشتیبانی',
       'title': 'پروفایل',
-      'icon': Icons.person,
-      'page': Container(color: Colors.blue),
+      'icon': const Icon(Icons.person),
+      'page': const ProfileScreen(),
     },
   ];
   int _navbarIndex = 0;
@@ -38,20 +44,24 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _navbarIndex == 0 ? null : AppBar(),
+      appBar: _navbarIndex == 0
+          ? null
+          : AppBar(
+              centerTitle: true,
+              title: Text(
+                _navbarItems[_navbarIndex]['appbarTitle'],
+              ),
+            ),
       bottomNavigationBar: BottomNavigationBar(
-        unselectedLabelStyle: TextStyle(),
-        selectedLabelStyle: TextStyle(),
-        selectedIconTheme: IconThemeData(color: Colors.red),
-        backgroundColor: Colors.green,
+        type: BottomNavigationBarType.fixed,
+        showUnselectedLabels: false,
+        backgroundColor: Theme.of(context).colorScheme.tertiary,
+        selectedItemColor: Theme.of(context).colorScheme.primary,
         items: _navbarItems
             .map(
-              (e) => BottomNavigationBarItem(
-                backgroundColor: Colors.amberAccent,
-                icon: Icon(
-                  e['icon'],
-                ),
-                label: e['title'],
+              (item) => BottomNavigationBarItem(
+                icon: item['icon'],
+                label: item['title'],
               ),
             )
             .toList(),
