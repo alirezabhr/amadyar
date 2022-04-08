@@ -4,6 +4,7 @@ import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 
+import '../../dummy_data/dummy_routes.dart';
 import '../widgets/map_north_button.dart';
 
 class MapScreen extends StatefulWidget {
@@ -23,21 +24,24 @@ class _MapScreenState extends State<MapScreen> {
   double _zoom = 13;
 
   LatLng _myLocation = LatLng(0, 0);
-  late Marker _myLocationMarker = _truckMarker(_myLocation);
 
   final List<LatLng> _destinations = [
-    LatLng(29.64, 52.492),
-    LatLng(29.68, 52.456),
-    LatLng(29.668, 52.462),
+    LatLng(dummyRoutes.last[1], dummyRoutes.last[0]),
   ];
+
+  final List<LatLng> _routeLatLongs = dummyRoutes
+      .map((latLongList) => LatLng(latLongList[1], latLongList[0]))
+      .toList();
 
   void showDefaultSnackBar(String msg) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
   }
 
   void _zoomIn() {
-    if (_zoom < _maxMapZoom) {
+    _zoom = _mapController.zoom;
+    if (_zoom + 1 <= _maxMapZoom) {
       _zoom += 1;
+      _mapCenter = _mapController.center;
       _mapController.move(_mapCenter, _zoom);
     } else {
       showDefaultSnackBar('نقشه در بزرگترین حالت است.');
@@ -45,8 +49,10 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   void _zoomOut() {
-    if (_zoom > _minMapZoom) {
+    _zoom = _mapController.zoom;
+    if (_zoom - 1 >= _minMapZoom) {
       _zoom -= 1;
+      _mapCenter = _mapController.center;
       _mapController.move(_mapCenter, _zoom);
     } else {
       showDefaultSnackBar('نقشه در کوچکترین حالت است.');
@@ -65,9 +71,8 @@ class _MapScreenState extends State<MapScreen> {
     double _positionLong = position != null ? position.longitude : 0;
 
     setState(() {
-      _myLocation = LatLng(_positionLat, _positionLong);
+      // _myLocation = LatLng(_positionLat, _positionLong);
       _mapCenter = _myLocation;
-      _myLocationMarker = _truckMarker(_myLocation);
       _zoom = 13;
     });
     _mapController.move(_mapCenter, _zoom);
@@ -97,6 +102,7 @@ class _MapScreenState extends State<MapScreen> {
 
   @override
   void initState() {
+    _myLocation = LatLng(dummyRoutes.first[1], dummyRoutes.first[0]);
     _gpsButtonEvent();
     super.initState();
   }
@@ -127,9 +133,18 @@ class _MapScreenState extends State<MapScreen> {
                         'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
                     subdomains: ['a', 'b', 'c'],
                   ),
+                  PolylineLayerOptions(polylines: [
+                    Polyline(
+                      points: _routeLatLongs,
+                      borderStrokeWidth: 2.5,
+                      strokeWidth: 2,
+                      color: Theme.of(context).colorScheme.secondary,
+                      borderColor: Theme.of(context).colorScheme.tertiary,
+                    )
+                  ]),
                   MarkerLayerOptions(
                     markers: [
-                      _myLocationMarker,
+                      _truckMarker(_myLocation),
                       ..._destinations
                           .map((point) => Marker(
                                 point: point,
@@ -147,7 +162,7 @@ class _MapScreenState extends State<MapScreen> {
                               ))
                           .toList(),
                     ],
-                  )
+                  ),
                 ],
               ),
               Column(
