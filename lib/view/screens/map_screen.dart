@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:geolocator/geolocator.dart';
 
 import '../widgets/map_north_button.dart';
 
@@ -21,21 +22,24 @@ class _MapScreenState extends State<MapScreen> {
   LatLng _mapCenter = LatLng(29.64, 52.48);
   double _zoom = 13;
 
-  late LatLng _myLocation;
-  late Marker _myLocationMarker;
+  LatLng _myLocation = LatLng(0, 0);
+  late Marker _myLocationMarker = _truckMarker(_myLocation);
 
-  List<Marker> _destinationsMarkers = [];
+  final List<LatLng> _destinations = [
+    LatLng(29.64, 52.492),
+    LatLng(29.68, 52.456),
+  ];
+
+  void showDefaultSnackBar(String msg) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
+  }
 
   void _zoomIn() {
     if (_zoom < _maxMapZoom) {
       _zoom += 1;
       _mapController.move(_mapCenter, _zoom);
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('نقشه در بزرگترین حالت است.'),
-        ),
-      );
+      showDefaultSnackBar('نقشه در بزرگترین حالت است.');
     }
   }
 
@@ -44,46 +48,54 @@ class _MapScreenState extends State<MapScreen> {
       _zoom -= 1;
       _mapController.move(_mapCenter, _zoom);
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('نقشه در کوچکترین حالت است.'),
-        ),
-      );
+      showDefaultSnackBar('نقشه در کوچکترین حالت است.');
     }
-  }
-
-  void _gpsButtonEvent() {
-    print('gps button clicked');
-    double d = _mapController.rotation;
-    _mapController.rotate(d);
   }
 
   void _northButtonEvent() {
     print('north button pressed');
+    double d = _mapController.rotation;
+    _mapController.rotate(d);
+  }
+
+  Future<void> _gpsButtonEvent() async {
+    Position? position = await _getCurrentPosition();
+    double _positionLat = position != null ? position.latitude : 0;
+    double _positionLong = position != null ? position.longitude : 0;
+
+    setState(() {
+      _myLocation = LatLng(_positionLat, _positionLong);
+      _mapCenter = _myLocation;
+      _myLocationMarker = _truckMarker(_myLocation);
+      _mapController.move(_mapCenter, _zoom);
+    });
+  }
+
+  Future<Position?> _getCurrentPosition() async {
+    LocationPermission permission;
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.deniedForever) {
+        return Future.error('Location Not Available');
+      }
+    }
+    return await Geolocator.getCurrentPosition();
+  }
+
+  Marker _truckMarker(LatLng location) {
+    return Marker(
+      point: location,
+      width: 100,
+      height: 100,
+      builder: (context) =>
+          Image.asset('assets/images/delivery_truck_24_24.png'),
+    );
   }
 
   @override
   void initState() {
-    _myLocation = LatLng(29.64, 52.48);
-    _myLocationMarker = Marker(
-      point: _myLocation,
-      width: 100,
-      height: 100,
-      builder: (context) => Image.asset('assets/images/delivery_truck_24_24.png'),
-    );
-
-    _destinationsMarkers = [LatLng(29.64, 52.492)]
-        .map((point) => Marker(
-              point: point,
-              width: 100,
-              height: 100,
-              builder: (context) => const Icon(
-                Icons.location_pin,
-                size: 36,
-                color: Colors.blueAccent,
-              ),
-            ))
-        .toList();
+    _gpsButtonEvent();
     super.initState();
   }
 
@@ -119,7 +131,19 @@ class _MapScreenState extends State<MapScreen> {
                   MarkerLayerOptions(
                     markers: [
                       _myLocationMarker,
-                      ..._destinationsMarkers,
+                      ..._destinations
+                          .map((point) => Marker(
+                                point: point,
+                                width: 100,
+                                height: 100,
+                                builder: (context) => Icon(
+                                  Icons.location_pin,
+                                  size: 36,
+                                  color:
+                                      Theme.of(context).colorScheme.secondary,
+                                ),
+                              ))
+                          .toList(),
                     ],
                   )
                 ],
