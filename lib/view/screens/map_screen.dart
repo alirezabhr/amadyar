@@ -28,6 +28,7 @@ class _MapScreenState extends State<MapScreen> {
   final List<LatLng> _destinations = [
     LatLng(29.64, 52.492),
     LatLng(29.68, 52.456),
+    LatLng(29.668, 52.462),
   ];
 
   void showDefaultSnackBar(String msg) {
@@ -54,8 +55,8 @@ class _MapScreenState extends State<MapScreen> {
 
   void _northButtonEvent() {
     print('north button pressed');
-    double d = _mapController.rotation;
-    _mapController.rotate(d);
+    double r = _mapController.rotation;
+    _mapController.rotate(r);
   }
 
   Future<void> _gpsButtonEvent() async {
@@ -67,8 +68,9 @@ class _MapScreenState extends State<MapScreen> {
       _myLocation = LatLng(_positionLat, _positionLong);
       _mapCenter = _myLocation;
       _myLocationMarker = _truckMarker(_myLocation);
-      _mapController.move(_mapCenter, _zoom);
+      _zoom = 13;
     });
+    _mapController.move(_mapCenter, _zoom);
   }
 
   Future<Position?> _getCurrentPosition() async {
@@ -109,10 +111,7 @@ class _MapScreenState extends State<MapScreen> {
               FlutterMap(
                 mapController: _mapController,
                 options: MapOptions(
-                  // swPanBoundary: LatLng(13, 77.5),
-                  // nePanBoundary: LatLng(13.07001, 77.58),
                   center: _mapCenter,
-                  // bounds: LatLngBounds.fromPoints(_latLngList),
                   zoom: _zoom,
                   plugins: [
                     MarkerClusterPlugin(),
@@ -138,9 +137,12 @@ class _MapScreenState extends State<MapScreen> {
                                 height: 100,
                                 builder: (context) => Icon(
                                   Icons.location_pin,
-                                  size: 36,
-                                  color:
-                                      Theme.of(context).colorScheme.secondary,
+                                  size: _destinations.indexOf(point) == 0
+                                      ? 36
+                                      : 28,
+                                  color: _destinations.indexOf(point) == 0
+                                      ? Theme.of(context).colorScheme.secondary
+                                      : Colors.grey,
                                 ),
                               ))
                           .toList(),
