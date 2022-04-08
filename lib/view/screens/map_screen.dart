@@ -6,6 +6,7 @@ import 'package:geolocator/geolocator.dart';
 
 import '../../dummy_data/dummy_routes.dart';
 import '../widgets/map_north_button.dart';
+import '../widgets/next_order_timeline_and_detail.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({Key? key}) : super(key: key);
@@ -140,7 +141,7 @@ class _MapScreenState extends State<MapScreen> {
                       strokeWidth: 2,
                       color: Theme.of(context).colorScheme.secondary,
                       borderColor: Theme.of(context).colorScheme.tertiary,
-                    )
+                    ),
                   ]),
                   MarkerLayerOptions(
                     markers: [
@@ -247,6 +248,10 @@ class _MapScreenState extends State<MapScreen> {
               ),
             ],
           ),
+        ),
+        const NextOrderTimelineAndDetail(
+          destinationName: 'بقالی حسن آقا',
+          orderTitle: 'دوغ آبعلی',
         ),
       ],
     );
