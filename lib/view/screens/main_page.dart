@@ -1,4 +1,5 @@
 import 'package:amadyar/view/screens/login_screen.dart';
+import 'package:amadyar/view/screens/otp_request_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'map_screen.dart';
@@ -31,7 +32,7 @@ class _MainPageState extends State<MainPage> {
       'appbarTitle': 'سفارشات',
       'title': 'سفارشات',
       'icon': const Icon(Icons.assignment),
-      'page': LoginScreen(),
+      'page': OtpScreen(),
     },
     {
       'appbarTitle': 'پروفایل و پشتیبانی',
