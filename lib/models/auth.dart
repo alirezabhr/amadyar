@@ -16,16 +16,16 @@ class Auth{
     return prefs.getString('access');
   }
 
-  static Future<bool> isLogedIn() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString('access') != null;
+  static Future<bool> isLoggedIn() async {
+    String? token = await Auth.getToken();
+    return token != null;
   }
 
   static Future<bool> phoneNumberExists(String phoneNumber, BuildContext context) async {
     //add input validity check! probably to the other side of this code
     var url = Uri.parse('$serverBaseAPI/accounts/phone_number/');
     var response = await http.post(url, body: {'phone_number': phoneNumber});
-    bool exists = jsonDecode(response.body)['user_exitst'];
+    bool exists = jsonDecode(response.body)['user_exists'];
     //TODO: add state handling => phone num is valid or not and changing pages!
     if(exists){
       SharedPreferences prefs = await SharedPreferences.getInstance();
