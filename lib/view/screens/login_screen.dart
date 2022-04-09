@@ -1,5 +1,5 @@
-import 'package:amadyar/models/auth.dart';
 import 'package:flutter/material.dart';
+import 'package:amadyar/controllers/auth.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
