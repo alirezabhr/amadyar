@@ -1,3 +1,5 @@
+import 'package:amadyar/view/screens/login_screen.dart';
+import 'package:amadyar/view/screens/otp_request_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'routes.dart';
@@ -35,6 +37,9 @@ class MyApp extends StatelessWidget {
       routes: {
         PageRoutes.welcomeScreen: (ctx) => WelcomeScreen(),
         PageRoutes.mainPage: (ctx) => MainPage(),
+        PageRoutes.phoneNumberScreen: (ctx) => LoginScreen(),
+        PageRoutes.otpScreen: (ctx) => OtpScreen(),
+        // PageRoutes.signUpScreen: (ctx) => 
       },
     );
   }
