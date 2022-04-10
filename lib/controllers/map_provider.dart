@@ -44,11 +44,11 @@ class MapProvider with ChangeNotifier {
     double _positionLat = position != null ? position.latitude : 0;
     double _positionLong = position != null ? position.longitude : 0;
 
-    _myLocation = LatLng(_positionLat, _positionLong);
     _mapCenter = _myLocation;
     _zoom = 13;
-
     _mapController.move(_mapCenter, _zoom);
+
+    changeMyLocation(_positionLat, _positionLong);
   }
 
   Future<Position?> _getCurrentPosition() async {
@@ -61,6 +61,11 @@ class MapProvider with ChangeNotifier {
       }
     }
     return await Geolocator.getCurrentPosition();
+  }
+
+  void changeMyLocation(double lat, double long) {
+    _myLocation = LatLng(lat, long);
+    notifyListeners();
   }
 
   LatLng get myLocation => _myLocation;

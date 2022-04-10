@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:provider/provider.dart';
+
+import '../../controllers/map_provider.dart';
 
 import '../../dummy_data/dummy_routes.dart';
+
 import '../widgets/map_north_button.dart';
 import '../widgets/next_order_timeline_and_detail.dart';
 
@@ -18,78 +21,17 @@ class MapScreen extends StatefulWidget {
 class _MapScreenState extends State<MapScreen> {
   final double _estimatedDistance = 18;
 
-  final double _minMapZoom = 8;
-  final double _maxMapZoom = 18;
-  final MapController _mapController = MapController();
-  LatLng _mapCenter = LatLng(29.64, 52.48);
-  double _zoom = 13;
-
-  LatLng _myLocation = LatLng(0, 0);
+  void showDefaultSnackBar(String msg) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
+  }
 
   final List<LatLng> _destinations = [
     LatLng(dummyRoutes.last[1], dummyRoutes.last[0]),
   ];
 
-  final List<LatLng> _routeLatLongs = dummyRoutes
+  final List<LatLng> _nextRouteLatLongs = dummyRoutes
       .map((latLongList) => LatLng(latLongList[1], latLongList[0]))
       .toList();
-
-  void showDefaultSnackBar(String msg) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
-  }
-
-  void _zoomIn() {
-    _zoom = _mapController.zoom;
-    if (_zoom + 1 <= _maxMapZoom) {
-      _zoom += 1;
-      _mapCenter = _mapController.center;
-      _mapController.move(_mapCenter, _zoom);
-    } else {
-      showDefaultSnackBar('نقشه در بزرگترین حالت است.');
-    }
-  }
-
-  void _zoomOut() {
-    _zoom = _mapController.zoom;
-    if (_zoom - 1 >= _minMapZoom) {
-      _zoom -= 1;
-      _mapCenter = _mapController.center;
-      _mapController.move(_mapCenter, _zoom);
-    } else {
-      showDefaultSnackBar('نقشه در کوچکترین حالت است.');
-    }
-  }
-
-  void _northButtonEvent() {
-    print('north button pressed');
-    double r = _mapController.rotation;
-    _mapController.rotate(r);
-  }
-
-  Future<void> _gpsButtonEvent() async {
-    Position? position = await _getCurrentPosition();
-    double _positionLat = position != null ? position.latitude : 0;
-    double _positionLong = position != null ? position.longitude : 0;
-
-    setState(() {
-      // _myLocation = LatLng(_positionLat, _positionLong);
-      _mapCenter = _myLocation;
-      _zoom = 13;
-    });
-    _mapController.move(_mapCenter, _zoom);
-  }
-
-  Future<Position?> _getCurrentPosition() async {
-    LocationPermission permission;
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.deniedForever) {
-        return Future.error('Location Not Available');
-      }
-    }
-    return await Geolocator.getCurrentPosition();
-  }
 
   Marker _truckMarker(LatLng location) {
     return Marker(
@@ -103,31 +45,31 @@ class _MapScreenState extends State<MapScreen> {
 
   @override
   void initState() {
-    _myLocation = LatLng(dummyRoutes.first[1], dummyRoutes.first[0]);
-    _gpsButtonEvent();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    final MapProvider mapProvider = Provider.of<MapProvider>(context);
+
     return Column(
       children: [
         Expanded(
           child: Stack(
             children: [
               FlutterMap(
-                mapController: _mapController,
+                mapController: mapProvider.mapController,
                 options: MapOptions(
-                  center: _mapCenter,
-                  zoom: _zoom,
+                  center: mapProvider.mapCenter,
+                  zoom: mapProvider.zoom,
                   plugins: [
                     MarkerClusterPlugin(),
                   ],
                 ),
                 layers: [
                   TileLayerOptions(
-                    minZoom: _minMapZoom,
-                    maxZoom: _maxMapZoom,
+                    minZoom: mapProvider.minMapZoom,
+                    maxZoom: mapProvider.maxMapZoom,
                     backgroundColor: Colors.black,
                     // errorImage: ,
                     urlTemplate:
@@ -136,7 +78,7 @@ class _MapScreenState extends State<MapScreen> {
                   ),
                   PolylineLayerOptions(polylines: [
                     Polyline(
-                      points: _routeLatLongs,
+                      points: _nextRouteLatLongs,
                       borderStrokeWidth: 2.5,
                       strokeWidth: 2,
                       color: Theme.of(context).colorScheme.secondary,
@@ -145,7 +87,7 @@ class _MapScreenState extends State<MapScreen> {
                   ]),
                   MarkerLayerOptions(
                     markers: [
-                      _truckMarker(_myLocation),
+                      _truckMarker(mapProvider.myLocation),
                       ..._destinations
                           .map((point) => Marker(
                                 point: point,
@@ -175,7 +117,9 @@ class _MapScreenState extends State<MapScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          MapNorthButton(event: _northButtonEvent),
+                          MapNorthButton(
+                            event: mapProvider.rotateToNorth,
+                          ),
                           Text(
                             '$_estimatedDistance  km',
                             style: const TextStyle(
@@ -207,7 +151,13 @@ class _MapScreenState extends State<MapScreen> {
                               height: 48,
                               width: 48,
                               child: IconButton(
-                                onPressed: _zoomIn,
+                                onPressed: () {
+                                  try {
+                                    mapProvider.zoomIn();
+                                  } catch (e) {
+                                    showDefaultSnackBar(e.toString());
+                                  }
+                                },
                                 icon: const Icon(Icons.add),
                               ),
                             ),
@@ -219,7 +169,13 @@ class _MapScreenState extends State<MapScreen> {
                               height: 48,
                               width: 48,
                               child: IconButton(
-                                onPressed: _zoomOut,
+                                onPressed: () {
+                                  try {
+                                    mapProvider.zoomOut();
+                                  } catch (e) {
+                                    showDefaultSnackBar(e.toString());
+                                  }
+                                },
                                 icon: const Icon(Icons.remove),
                                 // iconSize: ,
                               ),
@@ -235,7 +191,9 @@ class _MapScreenState extends State<MapScreen> {
                           height: 48,
                           width: 48,
                           child: IconButton(
-                            onPressed: _gpsButtonEvent,
+                            onPressed: () async {
+                              await mapProvider.gpsButtonEvent();
+                            },
                             icon: const Icon(Icons.gps_fixed),
                             color: Colors.white,
                             iconSize: 24,
