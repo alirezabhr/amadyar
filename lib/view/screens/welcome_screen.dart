@@ -1,8 +1,11 @@
 import 'dart:async';
 
+import 'package:amadyar/controllers/auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../routes.dart';
+import '../../providers/user_provider.dart';
 
 class WelcomeScreen extends StatefulWidget {
   @override
@@ -16,12 +19,13 @@ class _WelcomeScreenState extends State<WelcomeScreen>
   double _progress = 3;
 
   _loadData() async {
-    bool _userAuthenticated = true;
-
+    bool _userAuthenticated = await Auth.isLoggedIn();
     // TODO: check shared preference and user authentication
     if (_userAuthenticated) {
+      Provider.of<User>(context, listen: false).updateUser();
       Navigator.pushReplacementNamed(context, PageRoutes.mainPage);
     } else {
+      Navigator.pushReplacementNamed(context, PageRoutes.loginScreen);
       // Navigator.pushReplacementNamed(context, PageRoutes.phoneNumber);
     }
   }

@@ -65,7 +65,8 @@ flutter:
   assets:
     - assets/images/amadyar_logo_32.png
     - assets/images/amadyar_logo_8.png
-    - assets/images/delivery_truck_24_24.png
+    - assets/images/delivery_truck_24_24.png  
+    - assets/images/profile.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

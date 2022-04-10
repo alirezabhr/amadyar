@@ -17,11 +17,11 @@ class Auth{
   static Future<User> getUser() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return User(
-      
       firstname: prefs.getString('firstname'),
       lastname: prefs.getString('lastname'),
       phoneNumber: prefs.getString('phoneNumber'),
       company: prefs.getString('company'),
+      token: prefs.getString('access'),
     );
   }
 
@@ -47,13 +47,8 @@ class Auth{
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('phoneNumber', phoneNumber);
     bool exists = jsonDecode(response.data)['user_exists'];
-    //TODO: add state handling => phone num is valid or not and changing pages!
-    if(exists){
-      Navigator.pushReplacementNamed(context, PageRoutes.otpScreen);
-      return true;
-    }
-    Navigator.pushReplacementNamed(context, PageRoutes.signUpScreen);
-    return false;
+    Navigator.pushReplacementNamed(context, PageRoutes.otpScreen);
+    return true;
   }
 
   static Future<bool> login(String code, BuildContext context) async {
@@ -89,7 +84,7 @@ class Auth{
     if(response.statusCode != 200){
       return false;
     }
-    Navigator.pushReplacementNamed(context, PageRoutes.otpScreen);
+    Navigator.pushReplacementNamed(context, PageRoutes.mainPage);
     return true;
   }
 

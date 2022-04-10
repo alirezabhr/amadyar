@@ -38,7 +38,7 @@ class _MainPageState extends State<MainPage> {
       'appbarTitle': 'پروفایل و پشتیبانی',
       'title': 'پروفایل',
       'icon': const Icon(Icons.person),
-      'page': const ProfileScreen(),
+      'page': ProfileScreen(),
     },
   ];
   int _navbarIndex = 0;
