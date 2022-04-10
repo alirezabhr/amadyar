@@ -1,4 +1,6 @@
+import 'package:amadyar/controllers/cartable_orders_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../models/order.dart';
 
@@ -12,10 +14,13 @@ class CartableOrderCard extends StatelessWidget {
 
   String get buttonText {
     if (isNextOrder) {
-      if (order.status == OrderStatus.IN_PROGRESS) {
+      if (order.status == OrderStatus.ASSIGNED) {
+        // not arrived
+        return 'شروع سفر بعد';
+      } else if (order.status == OrderStatus.IN_PROGRESS) {
         // not arrived
         return 'به مقصد رسیدم';
-      } else if (order.status == OrderStatus.COMPLETE) {
+      } else if (order.status == OrderStatus.ARRIVED) {
         // arrived but not delivered
         return 'تحویل دادم';
       } else {
@@ -24,23 +29,6 @@ class CartableOrderCard extends StatelessWidget {
     } else {
       return '';
     }
-  }
-
-  void arrived() {}
-
-  void delivered() {}
-
-  void Function()? get buttonEvent {
-    if (isNextOrder) {
-      if (order.status == OrderStatus.IN_PROGRESS) {
-        // not arrived
-        return arrived;
-      } else if (order.status == OrderStatus.COMPLETE) {
-        // arrived but not delivered
-        return delivered;
-      }
-    }
-    return null;
   }
 
   String get jalaliFormattedDate {
@@ -53,6 +41,8 @@ class CartableOrderCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final CartableOrdersProvider ordersController =
+        Provider.of<CartableOrdersProvider>(context);
     final Size deviceSize = MediaQuery.of(context).size;
 
     return Container(
@@ -81,7 +71,20 @@ class CartableOrderCard extends StatelessWidget {
               ),
               isNextOrder
                   ? ElevatedButton(
-                      onPressed: buttonEvent,
+                      onPressed: () {
+                        if (isNextOrder) {
+                          if (order.status == OrderStatus.ASSIGNED) {
+                            // started
+                            ordersController.orderStarted();
+                          } else if (order.status == OrderStatus.IN_PROGRESS) {
+                            // arrived
+                            ordersController.orderArrived();
+                          } else if (order.status == OrderStatus.ARRIVED) {
+                            // delivered
+                            ordersController.orderDelivered();
+                          }
+                        }
+                      },
                       child: Text(
                         buttonText,
                         style: const TextStyle(color: Colors.white),

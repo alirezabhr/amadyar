@@ -1,0 +1,50 @@
+import 'package:flutter/foundation.dart';
+
+import '../models/order.dart';
+
+class CartableOrdersProvider with ChangeNotifier {
+  List<Order> _orders = [
+    Order(
+      id: 1,
+      title: '۴تا دوغ آبعلی',
+      status: OrderStatus.ASSIGNED,
+      weight: 12,
+      startTw: DateTime.now(),
+      endTw: DateTime.now(),
+      estimationArrival: DateTime.now().add(Duration(hours: 2)),
+      estimationDepart: DateTime.now().add(Duration(hours: 3)),
+    ),
+    Order(
+      id: 12,
+      title: '۶تا ماست موسیر رامک',
+      status: OrderStatus.ASSIGNED,
+      weight: 12,
+      startTw: DateTime.now(),
+      endTw: DateTime.now(),
+      estimationArrival: DateTime.now().add(Duration(hours: 6)),
+      estimationDepart: DateTime.now().add(Duration(hours: 6, minutes: 30)),
+    ),
+  ];
+
+  List<Order> get orders => _orders;
+
+  void orderStarted() {
+    final Order order = _orders.first;
+    order.changeStatus(OrderStatus.IN_PROGRESS);
+    notifyListeners();
+  }
+
+  void orderArrived() {
+    final Order order = _orders.first;
+    order.changeStatus(OrderStatus.ARRIVED);
+    notifyListeners();
+  }
+
+  void orderDelivered() {
+    final Order order = _orders.first;
+    order.changeStatus(OrderStatus.DELIVERED);
+    _orders.removeAt(0);
+    notifyListeners();
+  }
+
+}
