@@ -1,5 +1,6 @@
-import 'package:amadyar/models/order.dart';
 import 'package:flutter/material.dart';
+
+import '../../models/order.dart';
 
 class CartableOrderCard extends StatelessWidget {
   final bool isNextOrder;
@@ -42,20 +43,58 @@ class CartableOrderCard extends StatelessWidget {
     return null;
   }
 
+  String get jalaliFormattedDate {
+    return '${order.estimationArrival.formatter.wN} - ${order.estimationArrival.formatter.d} ${order.estimationArrival.formatter.mN}';
+  }
+
+  String get formattedTime {
+    return 'ساعت ${order.estimationArrival.hour}:${order.estimationArrival.minute}';
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: isNextOrder
-          ? Theme.of(context).colorScheme.secondary
-          : Colors.black26,
-      child: Column(
-        children: [
-          Text(order.title),
-          Text('زمان پیشنهادی: ${order.estimationArrival.toString()}'),
-          isNextOrder
-              ? ElevatedButton(onPressed: buttonEvent, child: Text(buttonText))
-              : Container(),
-        ],
+    final Size deviceSize = MediaQuery.of(context).size;
+
+    return Container(
+      width: (deviceSize.width * 3) / 4,
+      margin: const EdgeInsets.symmetric(vertical: 4.0),
+      child: Card(
+        color: isNextOrder ? const Color(0xFFC6E2F5) : const Color(0xFFE2E2E2),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              Text(order.title),
+              SizedBox(
+                width: double.infinity,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'زمان پیشنهادی تحویل: ',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    Text(jalaliFormattedDate),
+                    Text(formattedTime)
+                  ],
+                ),
+              ),
+              isNextOrder
+                  ? ElevatedButton(
+                      onPressed: buttonEvent,
+                      child: Text(
+                        buttonText,
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.blueAccent,
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      ),
+                    )
+                  : Container(),
+            ],
+          ),
+        ),
       ),
     );
   }
