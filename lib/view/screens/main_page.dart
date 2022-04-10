@@ -32,7 +32,7 @@ class _MainPageState extends State<MainPage> {
       'appbarTitle': 'سفارشات',
       'title': 'سفارشات',
       'icon': const Icon(Icons.assignment),
-      'page': OtpScreen(),
+      'page': const OrdersScreen(),
     },
     {
       'appbarTitle': 'پروفایل و پشتیبانی',
