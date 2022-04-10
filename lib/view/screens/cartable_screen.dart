@@ -21,7 +21,8 @@ class _CartableScreenState extends State<CartableScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.lightGreenAccent,
+      width: MediaQuery.of(context).size.width,
+      padding: const EdgeInsets.all(8.0),
       child: Column(
         children: _orders
             .map(
