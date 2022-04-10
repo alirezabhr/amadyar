@@ -8,9 +8,9 @@ class OrdersScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      itemCount: Orders.items.length,
+      itemCount: DummyOrders.items.length,
       itemBuilder: (BuildContext context, int index) {
-          return OrderHistoryCard(Orders.items[index]);
+          return OrderHistoryCard(DummyOrders.items[index]);
         },
       );
   }

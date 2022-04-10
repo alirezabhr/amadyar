@@ -1,6 +1,7 @@
 
 import 'package:amadyar/models/storage.dart';
 import 'package:amadyar/models/store.dart';
+import 'package:shamsi_date/shamsi_date.dart';
 
 enum OrderStatus {
   COMPLETE,
@@ -18,6 +19,8 @@ class Order{
   int weight;
   DateTime startTw;
   DateTime endTw;
+  late Jalali estimationArrival;
+  late Jalali estimationDepart;
 
   Order({
     required this.storage,
@@ -27,5 +30,10 @@ class Order{
     required this.weight,
     required this.startTw,
     required this.endTw,
-  });
+    required DateTime estimationArrival,
+    required DateTime estimationDepart,
+  }) {
+    this.estimationArrival = Jalali.fromDateTime(estimationArrival);
+    this.estimationDepart = Jalali.fromDateTime(estimationDepart);
+  }
 }
