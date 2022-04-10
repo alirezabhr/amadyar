@@ -13,7 +13,7 @@ class _OtpScreenState extends State<OtpScreen> {
   final TextEditingController _otpCodeController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
-  bool isNumeric(String s) {
+  bool isNumeric(String? s) {
     if (s == null) {
       return false;
     }
@@ -40,36 +40,54 @@ class _OtpScreenState extends State<OtpScreen> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text('کد یکبار مصرف را وارد کنید:'),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 8.0,
+                          vertical: 16.0,
+                        ),
+                        child: Text('کد یکبار مصرف را وارد کنید:'),
+                      ),
                       Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 8.0, vertical: 16.0),
-                          child: TextFormField(
-                            controller: _otpCodeController,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'کد یکبار مصرف را وارد کنید:';
-                              } else if (value.length != 6) {
-                                return 'کد ۶ رقمی وارد کنید';
-                              } else if (!isNumeric(value)) {
-                                return 'ارقام معتبر وارد کنید';
-                              }
-                              return null;
-                            },
-                            textDirection: TextDirection.ltr,
-                            decoration: const InputDecoration(
-                                border: OutlineInputBorder(),
-                                label: Padding(
-                                  padding:
-                                      EdgeInsets.symmetric(horizontal: 8.0),
-                                  child: Text('کد یکبار مصرف'),
-                                ),
-                                contentPadding:
-                                    EdgeInsets.symmetric(vertical: 6.0)),
-                          )),
-                      TextButton(onPressed: () {
-                        Navigator.pushReplacementNamed(context, PageRoutes.loginScreen);
-                      }, child: Text('تغییر شماره', style: TextStyle(color: Theme.of(context).colorScheme.primary),))
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: TextFormField(
+                          controller: _otpCodeController,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'کد یکبار مصرف را وارد کنید';
+                            } else if (value.length != 6) {
+                              return 'کد ۶ رقمی وارد کنید';
+                            } else if (!isNumeric(value)) {
+                              return 'ارقام معتبر وارد کنید';
+                            }
+                            return null;
+                          },
+                          textDirection: TextDirection.ltr,
+                          decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              label: Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 8.0),
+                                child: Text('کد یکبار مصرف'),
+                              ),
+                              contentPadding:
+                                  EdgeInsets.symmetric(vertical: 6.0)),
+                        ),
+                      ),
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pushReplacementNamed(
+                                    context, PageRoutes.loginScreen);
+                              },
+                              child: Text(
+                                'تغییر شماره',
+                                style: TextStyle(
+                                    color:
+                                        Theme.of(context).colorScheme.primary),
+                              ),
+                            ),
+                          ]),
                     ],
                   ),
                   SizedBox(
@@ -94,7 +112,7 @@ class _OtpScreenState extends State<OtpScreen> {
                         }
                       },
                       child: Text(
-                        "ثیت",
+                        "ثبت",
                         style: TextStyle(
                             color: Theme.of(context).colorScheme.primary,
                             fontWeight: FontWeight.w600),

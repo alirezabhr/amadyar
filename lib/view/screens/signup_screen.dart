@@ -10,7 +10,7 @@ class SignupScreen extends StatefulWidget {
 
 class _SignupScreenState extends State<SignupScreen> {
 
-  final _firtsNameController = TextEditingController();
+  final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
   final _companyCodeController = TextEditingController();
 
@@ -41,7 +41,7 @@ class _SignupScreenState extends State<SignupScreen> {
                           vertical: 16.0,
                         ),
                         child: TextFormField(
-                          controller: _firtsNameController,
+                          controller: _firstNameController,
                           validator: (value){
                             if(value == null || value.isEmpty){
                               return 'این فیلد نباید خالی باشد';
@@ -125,11 +125,13 @@ class _SignupScreenState extends State<SignupScreen> {
                         ),
                       ),
                       onPressed: () async {
-                        Auth.signup(
-                            context,
-                            fistName: _firtsNameController.text,
-                            lastName: _lastNameController.text,
-                            compayCode: _companyCodeController.text);
+                        if (_formKey.currentState!.validate()) {
+                          await Auth.signup(
+                              context,
+                              fistName: _firstNameController.text,
+                              lastName: _lastNameController.text,
+                              compayCode: _companyCodeController.text);
+                          }
                       },
                       child: Text(
                         "ادامه",
