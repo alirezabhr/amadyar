@@ -6,19 +6,7 @@ import 'package:flutter/cupertino.dart';
 class DummyOrders with ChangeNotifier {
   static List<Order> items = [
     Order(
-      storage: Storage(
-        label: 'انیار',
-        address: 'بلوار جمهوری انباله هوراااا',
-        latitude: 22,
-        longitude: 334,
-      ),
-      store: Store(
-          name: 'سوپری',
-          storeCode: '1234',
-          address: 'بلوار جمهوری حسن آقا اینا',
-          latitude: 12,
-          longitude: 124,
-          storeOwner: 'حسن آقا'),
+      id: 3,
       title: '۴تا دوغ آبعلی',
       status: OrderStatus.IN_PROGRESS,
       weight: 12,
@@ -28,6 +16,7 @@ class DummyOrders with ChangeNotifier {
       estimationDepart: DateTime.now().add(Duration(hours: 3)),
     ),
     Order(
+      id: 5,
       storage: Storage(
         label: 'انیار',
         address: 'بلوار جمهوری انباله هوراااا',
@@ -42,7 +31,7 @@ class DummyOrders with ChangeNotifier {
           longitude: 124,
           storeOwner: 'حسن آقا'),
       title: '۶تا ماست موسیر رامک',
-      status: OrderStatus.COMPLETE,
+      status: OrderStatus.ASSIGNED,
       weight: 12,
       startTw: DateTime.now(),
       endTw: DateTime.now(),
@@ -50,6 +39,7 @@ class DummyOrders with ChangeNotifier {
       estimationDepart: DateTime.now().add(Duration(hours: 3)),
     ),
     Order(
+      id: 6,
       storage: Storage(
         label: 'انیار',
         address: 'بلوار جمهوری انباله هوراااا',
@@ -64,7 +54,7 @@ class DummyOrders with ChangeNotifier {
           longitude: 124,
           storeOwner: 'حسن آقا'),
       title: 'title',
-      status: OrderStatus.BACKLOG,
+      status: OrderStatus.ASSIGNED,
       weight: 12,
       startTw: DateTime.now(),
       endTw: DateTime.now(),
@@ -72,6 +62,7 @@ class DummyOrders with ChangeNotifier {
       estimationDepart: DateTime.now().add(Duration(hours: 3)),
     ),
     Order(
+      id: 7,
       storage: Storage(
         label: 'انیار',
         address: 'بلوار جمهوری انباله هوراااا',
@@ -86,7 +77,7 @@ class DummyOrders with ChangeNotifier {
           longitude: 124,
           storeOwner: 'حسن آقا'),
       title: 'title',
-      status: OrderStatus.MISSED,
+      status: OrderStatus.ASSIGNED,
       weight: 12,
       startTw: DateTime.now(),
       endTw: DateTime.now(),
@@ -94,6 +85,7 @@ class DummyOrders with ChangeNotifier {
       estimationDepart: DateTime.now().add(Duration(hours: 3)),
     ),
     Order(
+      id: 8,
       storage: Storage(
         label: 'انیار',
         address: 'بلوار جمهوری انباله هوراااا',
@@ -109,7 +101,7 @@ class DummyOrders with ChangeNotifier {
           longitude: 124,
           storeOwner: 'حسن آقا'),
       title: 'title',
-      status: OrderStatus.COMPLETE,
+      status: OrderStatus.ASSIGNED,
       weight: 12,
       startTw: DateTime.now(),
       endTw: DateTime.now(),
@@ -117,6 +109,7 @@ class DummyOrders with ChangeNotifier {
       estimationDepart: DateTime.now().add(Duration(hours: 3)),
     ),
     Order(
+      id: 12,
       storage: Storage(
         label: 'انیار',
         address: 'بلوار جمهوری انباله هوراااا',
@@ -131,7 +124,7 @@ class DummyOrders with ChangeNotifier {
           longitude: 124,
           storeOwner: 'حسن آقا'),
       title: '۶تا ماست موسیر رامک',
-      status: OrderStatus.BACKLOG,
+      status: OrderStatus.ASSIGNED,
       weight: 12,
       startTw: DateTime.now(),
       endTw: DateTime.now(),

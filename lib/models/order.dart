@@ -1,19 +1,20 @@
+import 'package:flutter/foundation.dart';
 
 import 'package:amadyar/models/storage.dart';
 import 'package:amadyar/models/store.dart';
 import 'package:shamsi_date/shamsi_date.dart';
 
 enum OrderStatus {
-  COMPLETE,
+  ASSIGNED,
   IN_PROGRESS,
-  BACKLOG,
-  MISSED,
+  ARRIVED,
+  DELIVERED,
 }
 
-class Order{
-
-  Storage storage;
-  Store store;
+class Order with ChangeNotifier {
+  int id;
+  Storage? storage;
+  Store? store;
   String title;
   OrderStatus status;
   int weight;
@@ -23,8 +24,9 @@ class Order{
   late Jalali estimationDepart;
 
   Order({
-    required this.storage,
-    required this.store,
+    required this.id,
+    this.storage,
+    this.store,
     required this.title,
     required this.status,
     required this.weight,
@@ -35,5 +37,11 @@ class Order{
   }) {
     this.estimationArrival = Jalali.fromDateTime(estimationArrival);
     this.estimationDepart = Jalali.fromDateTime(estimationDepart);
+  }
+
+  void changeStatus(OrderStatus newStatus) {
+    // TODO call api to change status
+    status = newStatus;
+    notifyListeners();
   }
 }
