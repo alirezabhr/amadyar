@@ -3,13 +3,27 @@ import 'dart:convert';
 import 'package:amadyar/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
+import '../models/user.dart';
 
 String serverBaseAPI = 'http://10.0.2.2:8000';
 
 class Auth{
+  
+  static var dio = Dio();
 
   Future<String?> token = getToken();
+
+  static Future<User> getUser() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return User(
+      
+      firstname: prefs.getString('firstname'),
+      lastname: prefs.getString('lastname'),
+      phoneNumber: prefs.getString('phoneNumber'),
+      company: prefs.getString('company'),
+    );
+  }
 
   static Future<String?> getToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -23,33 +37,40 @@ class Auth{
 
   static Future<bool> phoneNumberExists(String phoneNumber, BuildContext context) async {
     //add input validity check! probably to the other side of this code
-    var url = Uri.parse('$serverBaseAPI/accounts/phone_number/');
-    var response = await http.post(url, body: {'phone_number': '+98$phoneNumber'});
-    Map<String, Object> parsedData = jsonDecode(response.body);
+    var url = '$serverBaseAPI/accounts/phone_number/';
+    var response = await dio.post(url, data: {'phone_number': '+98$phoneNumber'});
+    Map<String, Object> parsedData = jsonDecode(response.data);
     if(!parsedData.containsKey('user_exists')){
       //add Toast
       return false;
     }
-    bool exists = jsonDecode(response.body)['user_exists'];
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('phoneNumber', phoneNumber);
+    bool exists = jsonDecode(response.data)['user_exists'];
     //TODO: add state handling => phone num is valid or not and changing pages!
     if(exists){
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setString('phone_number', phoneNumber);
+      Navigator.pushReplacementNamed(context, PageRoutes.otpScreen);
       return true;
     }
-    Navigator.pushReplacementNamed(context, PageRoutes.otpScreen);
+    Navigator.pushReplacementNamed(context, PageRoutes.signUpScreen);
     return false;
   }
 
   static Future<bool> login(String code, BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var phoneNumber = prefs.getString('phone_number'); 
-    var url = Uri.parse('$serverBaseAPI/accounts/login/');
-    var response = await http.post(url, body: {'phone_number': '+98$phoneNumber', 'otp': code});
-    var parsedData = json.decode(response.body);
+    var url = '$serverBaseAPI/accounts/login/';
+    var response = await dio.post(url, data: {'phone_number': '+98$phoneNumber', 'otp': code});
+    var parsedData = json.decode(response.data);
     try{
+      String firstname = parsedData['first_name'];
+      String lastname = parsedData['last_name'];
+      String company = parsedData['company'];
       String access = parsedData['access'];
       String refresh = parsedData['refresh'];
+      prefs.setString('firstname', firstname);
+      prefs.setString('lastname', lastname);
+      prefs.setString('company', company);
       prefs.setString('access', access);
       prefs.setString('refresh', refresh);
       Navigator.pushReplacementNamed(context, PageRoutes.mainPage); 
@@ -59,16 +80,24 @@ class Auth{
     return true;
   }
 
-  static Future<bool> signup(String fistName, String lastName, String compayCode) async {
-    //api call to server
-    return false;
+  static Future<bool> signup(BuildContext context, {required String fistName, required String lastName, required String compayCode}) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var phoneNumber = prefs.getString('phone_number'); 
+    var url = '$serverBaseAPI/accounts/signup/';
+    var response = await dio.post(url, data: {'phone_number': phoneNumber, 'first_name': fistName, 'last_name': lastName, 'company_code': compayCode});
+    var parsedData = json.decode(response.data);
+    if(response.statusCode != 200){
+      return false;
+    }
+    Navigator.pushReplacementNamed(context, PageRoutes.otpScreen);
+    return true;
   }
 
   static void logout() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.remove('phone_number');
-    prefs.remove('fist_name');
-    prefs.remove('last_name');
+    prefs.remove('phoneNumber');
+    prefs.remove('fistname');
+    prefs.remove('lastname');
     prefs.remove('access');
     prefs.remove('refresh');
     prefs.remove('company');
