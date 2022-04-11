@@ -4,7 +4,11 @@ import 'package:provider/provider.dart';
 import '../../models/user.dart';
 
 class ProfileScreen extends StatelessWidget {
-  ProfileScreen({Key? key}) : super(key: key);
+  const ProfileScreen({Key? key}) : super(key: key);
+
+  String fullname(String? firstname, String? lastname){
+    return firstname != null && lastname != null ? firstname + lastname : "";
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,19 +26,17 @@ class ProfileScreen extends StatelessWidget {
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const CircleAvatar(
-            radius: 120,
+              const Padding(
+                padding: EdgeInsets.only(bottom: 18.0),
+                child: CircleAvatar(
+            radius: 80,
             backgroundImage: AssetImage(
-              'assets/images/profile.jpg',
+                'assets/images/profile.jpg',
             ),
           ),
-              Text(
-                user.firstname != null ? user.firstname as String : "",
-                textDirection: TextDirection.rtl,
-                style: style,
               ),
-             Text(
-                user.lastname != null ? user.lastname as String : "",
+              Text(
+                fullname(user.firstname, user.lastname),
                 textDirection: TextDirection.rtl,
                 style: style,
               ),
