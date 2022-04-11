@@ -73,9 +73,10 @@ class Auth {
 
     var url = '$serverBaseAPI/accounts/otp_check/';
     await dio.post(url, data: {
-      'phone_number': phoneNumber,
+      'phone_number': '+98$phoneNumber',
       'otp': otp,
     });
+
     Navigator.pushReplacementNamed(context, PageRoutes.signUpScreen);
   }
 
@@ -97,12 +98,13 @@ class Auth {
       {required String fistName,
       required String lastName,
       required String companyCode}) async {
+
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var phoneNumber = prefs.getString(SharedPreferencesKeys.phoneNumber);
 
     var url = '$serverBaseAPI/accounts/signup/';
     var response = await dio.post(url, data: {
-      'phone_number': phoneNumber,
+      'phone_number': '+98$phoneNumber',
       'first_name': fistName,
       'last_name': lastName,
       'company_code': companyCode
