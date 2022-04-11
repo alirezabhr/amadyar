@@ -130,7 +130,7 @@ class _SignupScreenState extends State<SignupScreen> {
                               context,
                               fistName: _firstNameController.text,
                               lastName: _lastNameController.text,
-                              compayCode: _companyCodeController.text);
+                              companyCode: _companyCodeController.text);
                           }
                       },
                       child: Text(

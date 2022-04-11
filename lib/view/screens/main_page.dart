@@ -1,5 +1,3 @@
-import 'package:amadyar/view/screens/login_screen.dart';
-import 'package:amadyar/view/screens/otp_request_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'map_screen.dart';
