@@ -14,11 +14,15 @@ class HistoryScreen extends StatelessWidget {
     return Container(
         width: MediaQuery.of(context).size.width,
         padding: const EdgeInsets.all(8.0),
-        child: ListView.builder(
-          itemCount: ordersCtrl.orders.length,
-          itemBuilder: (BuildContext context, int index) {
-            return OrderHistoryCard(ordersCtrl.orders[index]);
-          },
-        ));
+        child: RefreshIndicator(
+          onRefresh: ordersCtrl.updateOrders,
+          child: ListView.builder(
+            itemCount: ordersCtrl.orders.length,
+            itemBuilder: (BuildContext context, int index) {
+              return OrderHistoryCard(ordersCtrl.orders[index]);
+            },
+          ),
+        )
+      );
   }
 }

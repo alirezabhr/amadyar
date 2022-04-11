@@ -18,18 +18,16 @@ class _CartableScreenState extends State<CartableScreen> {
         Provider.of<CartableOrdersProvider>(context);
 
     return Container(
-      width: MediaQuery.of(context).size.width,
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        children: ordersCtrl.orders
-            .map(
-              (order) => CartableOrderCard(
-                isNextOrder: ordersCtrl.orders.indexOf(order) == 0,
-                order: order,
-              ),
-            )
-            .toList(),
-      ),
-    );
+        width: MediaQuery.of(context).size.width,
+        padding: const EdgeInsets.all(8.0),
+        child: RefreshIndicator(
+          onRefresh: ordersCtrl.updateOrders,
+          child: ListView.builder(
+            itemCount: ordersCtrl.orders.length,
+            itemBuilder: (BuildContext context, int index) {
+              return CartableOrderCard(isNextOrder: index == 0 ? true : false , order:ordersCtrl.orders[index]);
+            },
+          ),
+        ));
   }
 }
