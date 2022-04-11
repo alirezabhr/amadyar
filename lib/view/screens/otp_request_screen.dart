@@ -1,9 +1,10 @@
 import 'package:amadyar/routes.dart';
 import 'package:flutter/material.dart';
+
 import '../../controllers/auth.dart';
 
 class OtpScreen extends StatefulWidget {
-  OtpScreen({Key? key}) : super(key: key);
+  const OtpScreen({Key? key}) : super(key: key);
 
   @override
   State<OtpScreen> createState() => _OtpScreenState();
@@ -13,16 +14,24 @@ class _OtpScreenState extends State<OtpScreen> {
   final TextEditingController _otpCodeController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
+  bool _isSubmitting = false;
+
   bool isNumeric(String? s) {
     if (s == null) {
       return false;
     }
-    return double.tryParse(s) != null;
+    return int.tryParse(s) != null;
+  }
+
+  void showDefaultSnackBar(String msg) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
   }
 
   @override
   Widget build(BuildContext context) {
     final Size deviceSize = MediaQuery.of(context).size;
+    final Map routeArgs = ModalRoute.of(context)!.settings.arguments as Map;
+    final bool userExists = routeArgs['userExists'];
 
     return Scaffold(
       body: Container(
@@ -63,13 +72,16 @@ class _OtpScreenState extends State<OtpScreen> {
                           },
                           textDirection: TextDirection.ltr,
                           decoration: const InputDecoration(
-                              border: OutlineInputBorder(),
-                              label: Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 8.0),
-                                child: Text('کد یکبار مصرف'),
-                              ),
-                              contentPadding:
-                                  EdgeInsets.symmetric(vertical: 6.0)),
+                            border: OutlineInputBorder(),
+                            label: Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Text('کد یکبار مصرف'),
+                            ),
+                            contentPadding: EdgeInsets.symmetric(
+                              vertical: 6.0,
+                              horizontal: 8.0,
+                            ),
+                          ),
                         ),
                       ),
                       Row(
@@ -78,7 +90,7 @@ class _OtpScreenState extends State<OtpScreen> {
                             TextButton(
                               onPressed: () {
                                 Navigator.pushReplacementNamed(
-                                    context, PageRoutes.loginScreen);
+                                    context, PageRoutes.phoneNumberScreen);
                               },
                               child: Text(
                                 'تغییر شماره',
@@ -105,18 +117,41 @@ class _OtpScreenState extends State<OtpScreen> {
                       ),
                       onPressed: () async {
                         if (_formKey.currentState!.validate()) {
-                          await Auth.login(
-                            _otpCodeController.text,
-                            context,
-                          );
+                          setState(() {
+                            _isSubmitting = true;
+                          });
+                          try {
+                            if (userExists) {
+                              await Auth.login(
+                                context,
+                                _otpCodeController.text,
+                              );
+                            } else {
+                              await Auth.checkOtp(
+                                context,
+                                otp: _otpCodeController.text,
+                              );
+                            }
+                          } catch (_) {
+                            showDefaultSnackBar('رمز یکبار مصرف اشتباه است.');
+                          }
+                          setState(() {
+                            _isSubmitting = false;
+                          });
                         }
                       },
-                      child: Text(
-                        "ثبت",
-                        style: TextStyle(
-                            color: Theme.of(context).colorScheme.primary,
-                            fontWeight: FontWeight.w600),
-                      ),
+                      child: _isSubmitting
+                          ? const SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(),
+                            )
+                          : Text(
+                              "ثبت",
+                              style: TextStyle(
+                                  color: Theme.of(context).colorScheme.primary,
+                                  fontWeight: FontWeight.w600),
+                            ),
                     ),
                   ),
                 ],

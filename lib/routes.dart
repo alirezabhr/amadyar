@@ -3,5 +3,5 @@ class PageRoutes {
   static String mainPage = "/main";
   static String otpScreen = "/otp_screen";
   static String signUpScreen = "/signup";
-  static String loginScreen = "/login";
+  static String phoneNumberScreen = "/login";
 }

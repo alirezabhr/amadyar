@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:amadyar/controllers/auth.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+class PhoneNumberScreen extends StatefulWidget {
+  const PhoneNumberScreen({Key? key}) : super(key: key);
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<PhoneNumberScreen> createState() => _PhoneNumberScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _PhoneNumberScreenState extends State<PhoneNumberScreen> {
   final TextEditingController _phoneNumberController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  bool _isSubmitting = false;
 
   @override
   Widget build(BuildContext context) {
@@ -85,14 +86,26 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       onPressed: () async {
+                        setState(() {
+                          _isSubmitting = true;
+                        });
                         if (_formKey.currentState!.validate()) {
                           await Auth.phoneNumberExists(
                             _phoneNumberController.text,
                             context,
                           );
                         }
+                        setState(() {
+                          _isSubmitting = false;
+                        });
                       },
-                      child: Text(
+                      child: _isSubmitting
+                          ?  const SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(),
+                            )
+                          : Text(
                         "ادامه",
                         style: TextStyle(
                           color: Theme.of(context).colorScheme.primary,

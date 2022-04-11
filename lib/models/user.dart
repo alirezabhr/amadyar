@@ -3,11 +3,14 @@ class User {
   String? lastname;
   String? phoneNumber;
   String? company;
+  String? token;
 
   User(
       {
       this.firstname,
       this.lastname,
       this.phoneNumber,
-      this.company});
+      this.company,
+      this.token,
+      });
 }
