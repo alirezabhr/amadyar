@@ -11,6 +11,7 @@ class PhoneNumberScreen extends StatefulWidget {
 class _PhoneNumberScreenState extends State<PhoneNumberScreen> {
   final TextEditingController _phoneNumberController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  bool _isSubmitting = false;
 
   @override
   Widget build(BuildContext context) {
@@ -85,14 +86,26 @@ class _PhoneNumberScreenState extends State<PhoneNumberScreen> {
                         ),
                       ),
                       onPressed: () async {
+                        setState(() {
+                          _isSubmitting = true;
+                        });
                         if (_formKey.currentState!.validate()) {
                           await Auth.phoneNumberExists(
                             _phoneNumberController.text,
                             context,
                           );
                         }
+                        setState(() {
+                          _isSubmitting = false;
+                        });
                       },
-                      child: Text(
+                      child: _isSubmitting
+                          ?  const SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(),
+                            )
+                          : Text(
                         "ادامه",
                         style: TextStyle(
                           color: Theme.of(context).colorScheme.primary,

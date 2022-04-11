@@ -9,12 +9,13 @@ class SignupScreen extends StatefulWidget {
 }
 
 class _SignupScreenState extends State<SignupScreen> {
-
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
   final _companyCodeController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
+
+  bool _isSubmitting = false;
 
   @override
   Widget build(BuildContext context) {
@@ -42,8 +43,8 @@ class _SignupScreenState extends State<SignupScreen> {
                         ),
                         child: TextFormField(
                           controller: _firstNameController,
-                          validator: (value){
-                            if(value == null || value.isEmpty){
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
                               return 'این فیلد نباید خالی باشد';
                             }
                             return null;
@@ -56,7 +57,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                 child: Text('نام'),
                               ),
                               contentPadding:
-                                  EdgeInsets.symmetric(horizontal : 6.0)),
+                                  EdgeInsets.symmetric(horizontal: 6.0)),
                         ),
                       ),
                       // const Text('نام خانوادگی خود را وارد کنید:'),
@@ -67,8 +68,8 @@ class _SignupScreenState extends State<SignupScreen> {
                         ),
                         child: TextFormField(
                           controller: _lastNameController,
-                          validator: (value){
-                            if(value == null || value.isEmpty){
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
                               return 'این فیلد نباید خالی باشد';
                             }
                             return null;
@@ -92,8 +93,8 @@ class _SignupScreenState extends State<SignupScreen> {
                         ),
                         child: TextFormField(
                           controller: _companyCodeController,
-                          validator: (value){
-                            if(value == null || value.isEmpty){
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
                               return 'این فیلد نباید خالی باشد';
                             }
                             return null;
@@ -121,24 +122,43 @@ class _SignupScreenState extends State<SignupScreen> {
                         ),
                         side: BorderSide(
                           width: 2,
-                          color: Theme.of(context).colorScheme.secondary,
+                          color: Theme.of(context).colorScheme.primary,
                         ),
                       ),
                       onPressed: () async {
+                        setState(() {
+                          _isSubmitting = true;
+                        });
+
                         if (_formKey.currentState!.validate()) {
-                          await Auth.signup(
-                              context,
-                              fistName: _firstNameController.text,
-                              lastName: _lastNameController.text,
-                              companyCode: _companyCodeController.text);
+                          try {
+                            await Auth.signup(context,
+                                fistName: _firstNameController.text,
+                                lastName: _lastNameController.text,
+                                companyCode: _companyCodeController.text);
+                          } catch (e) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('اطلاعات وارد شده اشتباه است')),
+                            );
                           }
+                        }
+
+                        setState(() {
+                          _isSubmitting = false;
+                        });
                       },
-                      child: Text(
-                        "ادامه",
-                        style: TextStyle(
-                            color: Theme.of(context).colorScheme.primary,
-                            fontWeight: FontWeight.w600),
-                      ),
+                      child: _isSubmitting
+                          ? const SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(),
+                            )
+                          : Text(
+                              "ادامه",
+                              style: TextStyle(
+                                  color: Theme.of(context).colorScheme.primary,
+                                  fontWeight: FontWeight.w600),
+                            ),
                     ),
                   ),
                 ],
