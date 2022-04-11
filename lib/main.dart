@@ -1,14 +1,15 @@
-import 'package:amadyar/providers/user_provider.dart';
-import 'package:amadyar/view/screens/phone_number_screen.dart';
-import 'package:amadyar/view/screens/otp_request_screen.dart';
-import 'package:amadyar/view/screens/signup_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'routes.dart';
 
+import 'models/user.dart';
+
 import 'view/screens/main_page.dart';
 import 'view/screens/welcome_screen.dart';
+import 'view/screens/phone_number_screen.dart';
+import 'view/screens/otp_request_screen.dart';
+import 'view/screens/signup_screen.dart';
 
 void main() {
   runApp(const MyApp());
