@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dio/dio.dart';
 
+import 'server_data.dart';
+
 import '../../routes.dart';
 
 import '../models/user.dart';
 import '../models/shared_preferences_keys.dart';
-
-String serverBaseAPI = 'http://10.0.2.2:8000';
 
 class Auth {
   static var dio = Dio();
@@ -52,7 +52,7 @@ class Auth {
   static Future<void> phoneNumberExists(
       String phoneNumber, BuildContext context) async {
 
-    var url = '$serverBaseAPI/accounts/phone_number/';
+    var url = '${ServerData.serverBaseAPI}/accounts/phone_number/';
     var response = await dio.post(
       url,
       data: {'phone_number': '+98$phoneNumber'},
@@ -71,7 +71,7 @@ class Auth {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var phoneNumber = prefs.getString(SharedPreferencesKeys.phoneNumber);
 
-    var url = '$serverBaseAPI/accounts/otp_check/';
+    var url = '${ServerData.serverBaseAPI}/accounts/otp_check/';
     await dio.post(url, data: {
       'phone_number': '+98$phoneNumber',
       'otp': otp,
@@ -84,7 +84,7 @@ class Auth {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var phoneNumber = prefs.getString(SharedPreferencesKeys.phoneNumber);
 
-    var url = '$serverBaseAPI/accounts/login/';
+    var url = '${ServerData.serverBaseAPI}/accounts/login/';
     var response = await dio.post(
       url,
       data: {'phone_number': '+98$phoneNumber', 'otp': code},
@@ -102,7 +102,7 @@ class Auth {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var phoneNumber = prefs.getString(SharedPreferencesKeys.phoneNumber);
 
-    var url = '$serverBaseAPI/accounts/signup/';
+    var url = '${ServerData.serverBaseAPI}/accounts/signup/';
     var response = await dio.post(url, data: {
       'phone_number': '+98$phoneNumber',
       'first_name': fistName,
