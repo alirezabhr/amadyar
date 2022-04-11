@@ -51,6 +51,7 @@ class _MapScreenState extends State<MapScreen> {
   @override
   Widget build(BuildContext context) {
     final MapProvider mapProvider = Provider.of<MapProvider>(context);
+    mapProvider.creatingMapController();  // need to create new map Controller
 
     return Column(
       children: [
@@ -70,8 +71,6 @@ class _MapScreenState extends State<MapScreen> {
                   TileLayerOptions(
                     minZoom: mapProvider.minMapZoom,
                     maxZoom: mapProvider.maxMapZoom,
-                    backgroundColor: Colors.black,
-                    // errorImage: ,
                     urlTemplate:
                         'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
                     subdomains: ['a', 'b', 'c'],

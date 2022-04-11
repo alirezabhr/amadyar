@@ -7,11 +7,16 @@ class MapProvider with ChangeNotifier {
   final double _minMapZoom = 8;
   final double _maxMapZoom = 18;
 
-  final MapController _mapController = MapController();
   LatLng _mapCenter = LatLng(29.64, 52.48);
   double _zoom = 13;
 
   LatLng _myLocation = LatLng(0, 0);
+
+  MapController _mapController = MapController();
+
+  void creatingMapController () {
+    _mapController = MapController();
+  }
 
   void zoomIn() {
     _zoom = _mapController.zoom;
