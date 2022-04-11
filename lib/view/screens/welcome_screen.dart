@@ -8,6 +8,8 @@ import '../../routes.dart';
 import '../../providers/user_provider.dart';
 
 class WelcomeScreen extends StatefulWidget {
+  const WelcomeScreen({Key? key}) : super(key: key);
+
   @override
   _WelcomeScreenState createState() => _WelcomeScreenState();
 }
@@ -20,13 +22,11 @@ class _WelcomeScreenState extends State<WelcomeScreen>
 
   _loadData() async {
     bool _userAuthenticated = await Auth.isLoggedIn();
-    // TODO: check shared preference and user authentication
     if (_userAuthenticated) {
       Provider.of<User>(context, listen: false).updateUser();
       Navigator.pushReplacementNamed(context, PageRoutes.mainPage);
     } else {
-      Navigator.pushReplacementNamed(context, PageRoutes.loginScreen);
-      // Navigator.pushReplacementNamed(context, PageRoutes.phoneNumber);
+      Navigator.pushReplacementNamed(context, PageRoutes.phoneNumberScreen);
     }
   }
 
