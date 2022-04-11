@@ -1,4 +1,7 @@
+import 'package:amadyar/controllers/history_orders_provider.dart';
+import 'package:amadyar/models/order.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dio/dio.dart';
 
@@ -91,6 +94,7 @@ class Auth {
     );
 
     await saveUserDataInSharedPreference(response.data);
+    await Provider.of<HistoryOrdersProvider>(context).updateOrders();
     Navigator.pushReplacementNamed(context, PageRoutes.mainPage);
   }
 

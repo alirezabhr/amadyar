@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 
 import '../../routes.dart';
 import '../../models/user.dart';
+import '../../controllers/history_orders_provider.dart';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({Key? key}) : super(key: key);
@@ -23,7 +24,9 @@ class _WelcomeScreenState extends State<WelcomeScreen>
   _loadData() async {
     bool _userAuthenticated = await Auth.isLoggedIn();
     if (_userAuthenticated) {
+      // TODO: add error handling if not connected to wifi
       Provider.of<User>(context, listen: false).updateUser();
+      Provider.of<HistoryOrdersProvider>(context, listen: false).updateOrders();
       Navigator.pushReplacementNamed(context, PageRoutes.mainPage);
     } else {
       Navigator.pushReplacementNamed(context, PageRoutes.phoneNumberScreen);

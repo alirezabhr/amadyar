@@ -1,3 +1,4 @@
+import 'package:amadyar/controllers/history_orders_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -29,6 +30,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider<MapProvider>(create: (_) => MapProvider()),
         ChangeNotifierProvider<CartableOrdersProvider>(
             create: (_) => CartableOrdersProvider()),
+        ChangeNotifierProvider<HistoryOrdersProvider>(create: (_) => HistoryOrdersProvider()),
       ],
       child: MaterialApp(
         title: 'حمل و نقل آمادیار',

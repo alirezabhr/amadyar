@@ -1,37 +1,28 @@
 
+import 'package:amadyar/controllers/server_data.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
 import '../models/order.dart';
 
 class HistoryOrdersProvider with ChangeNotifier{
-  List<Order> _orders = [
-    Order(
-      id: 1,
-      title: '۴تا دوغ آبعلی',
-      statusText: 'AS',
-      weight: 12,
-      startTw: DateTime.now(),
-      endTw: DateTime.now(),
-      estimationArrival: DateTime.now().add(Duration(hours: 2)),
-      estimationDepart: DateTime.now().add(Duration(hours: 3)),
-    ),
-    Order(
-      id: 12,
-      title: '۶تا ماست موسیر رامک',
-      statusText: 'DL',
-      weight: 12,
-      startTw: DateTime.now(),
-      endTw: DateTime.now(),
-      estimationArrival: DateTime.now().add(Duration(hours: 6)),
-      estimationDepart: DateTime.now().add(Duration(hours: 6, minutes: 30)),
-    ),
-  ];
+  List<Order> _orders = [];
 
-  List<Order> get orders => _orders;
+  List<Order> get orders => [..._orders];
 
   Future<void> updateOrders() async {
     //api call to get orders
+    Dio dio = await ServerData().getDio();
+    var url = '${ServerData.serverBaseAPI}/haul/order/';
+    try{
+      var response = await dio.get(url);
+      //assign response to orders and handel errors  
+    } catch (e){
+      // do nothing? or get orders from cache
+    }
     notifyListeners();
   } 
+
+  
 
 }

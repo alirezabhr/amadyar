@@ -26,7 +26,7 @@ class CartableOrdersProvider with ChangeNotifier {
     ),
   ];
 
-  List<Order> get orders => _orders;
+  List<Order> get orders => [..._orders];
 
   void orderStarted() {
     final Order order = _orders.first;
