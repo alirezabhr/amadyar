@@ -1,8 +1,9 @@
+
 import 'package:flutter/foundation.dart';
 
 import '../models/order.dart';
 
-class CartableOrdersProvider with ChangeNotifier {
+class HistoryOrdersProvider with ChangeNotifier{
   List<Order> _orders = [
     Order(
       id: 1,
@@ -28,23 +29,9 @@ class CartableOrdersProvider with ChangeNotifier {
 
   List<Order> get orders => _orders;
 
-  void orderStarted() {
-    final Order order = _orders.first;
-    order.changeStatus(OrderStatus.IN_PROGRESS);
+  Future<void> updateOrders() async {
+    //api call to get orders
     notifyListeners();
-  }
-
-  void orderArrived() {
-    final Order order = _orders.first;
-    order.changeStatus(OrderStatus.ARRIVED);
-    notifyListeners();
-  }
-
-  void orderDelivered() {
-    final Order order = _orders.first;
-    order.changeStatus(OrderStatus.DELIVERED);
-    _orders.removeAt(0);
-    notifyListeners();
-  }
+  } 
 
 }
