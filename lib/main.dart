@@ -1,5 +1,5 @@
 import 'package:amadyar/providers/user_provider.dart';
-import 'package:amadyar/view/screens/login_screen.dart';
+import 'package:amadyar/view/screens/phone_number_screen.dart';
 import 'package:amadyar/view/screens/otp_request_screen.dart';
 import 'package:amadyar/view/screens/signup_screen.dart';
 import 'package:flutter/material.dart';
@@ -42,11 +42,11 @@ class MyApp extends StatelessWidget {
         },
         initialRoute: PageRoutes.welcomeScreen,
         routes: {
-          PageRoutes.welcomeScreen: (ctx) => WelcomeScreen(),
-          PageRoutes.mainPage: (ctx) => MainPage(),
-          PageRoutes.loginScreen: (ctx) => LoginScreen(),
-          PageRoutes.otpScreen: (ctx) => OtpScreen(),
-          PageRoutes.signUpScreen: (ctx) => SignupScreen(),
+          PageRoutes.welcomeScreen: (ctx) => const WelcomeScreen(),
+          PageRoutes.phoneNumberScreen: (ctx) => const PhoneNumberScreen(),
+          PageRoutes.otpScreen: (ctx) => const OtpScreen(),
+          PageRoutes.signUpScreen: (ctx) => const SignupScreen(),
+          PageRoutes.mainPage: (ctx) => const MainPage(),
         },
       ),
     );

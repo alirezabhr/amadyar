@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:amadyar/controllers/auth.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+class PhoneNumberScreen extends StatefulWidget {
+  const PhoneNumberScreen({Key? key}) : super(key: key);
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<PhoneNumberScreen> createState() => _PhoneNumberScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _PhoneNumberScreenState extends State<PhoneNumberScreen> {
   final TextEditingController _phoneNumberController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
