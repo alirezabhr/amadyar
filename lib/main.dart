@@ -11,6 +11,9 @@ import 'view/screens/phone_number_screen.dart';
 import 'view/screens/otp_request_screen.dart';
 import 'view/screens/signup_screen.dart';
 
+import 'controllers/cartable_orders_provider.dart';
+import 'controllers/map_provider.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -23,6 +26,9 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (ctx) => User()),
+        ChangeNotifierProvider<MapProvider>(create: (_) => MapProvider()),
+        ChangeNotifierProvider<CartableOrdersProvider>(
+            create: (_) => CartableOrdersProvider()),
       ],
       child: MaterialApp(
         title: 'حمل و نقل آمادیار',
