@@ -13,9 +13,10 @@ class HistoryOrdersProvider with ChangeNotifier{
   Future<void> updateOrders() async {
     //api call to get orders
     Dio dio = await ServerData().getDio();
-    var url = '${ServerData.serverBaseAPI}/haul/order/';
+    var url = '/haul/order/';
     try{
       var response = await dio.get(url);
+      print(response.data);
       //assign response to orders and handel errors  
     } catch (e){
       // do nothing? or get orders from cache

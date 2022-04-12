@@ -19,7 +19,7 @@ class CartableOrdersProvider with ChangeNotifier {
     Order(
       id: 12,
       title: '۶تا ماست موسیر رامک',
-      statusText: 'DL',
+      statusText: 'AS',
       weight: 12,
       startTw: DateTime.now(),
       endTw: DateTime.now(),
@@ -63,11 +63,13 @@ class CartableOrdersProvider with ChangeNotifier {
     //api call to get orders
     print('hey i was called');
     Dio dio = await ServerData().getDio();
-    var url = '${ServerData.serverBaseAPI}/haul/order/';
+    var url = '/haul/order/';
     try{
       var response = await dio.get(url);
+      print(response.data);
       //assign response to orders and handel errors  
     } catch (e){
+      print('something went wrong');
       // do nothing? or get orders from cache
     }
     notifyListeners();

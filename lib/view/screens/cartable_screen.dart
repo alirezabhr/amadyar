@@ -12,10 +12,20 @@ class CartableScreen extends StatefulWidget {
 }
 
 class _CartableScreenState extends State<CartableScreen> {
+
+  @override
+  void initState() {
+    Provider.of<CartableOrdersProvider>(context, listen: false).updateOrders();
+    super.initState();
+  }
+
+
   @override
   Widget build(BuildContext context) {
     final CartableOrdersProvider ordersCtrl =
         Provider.of<CartableOrdersProvider>(context);
+
+    
 
     return Container(
         width: MediaQuery.of(context).size.width,
@@ -32,7 +42,6 @@ class _CartableScreenState extends State<CartableScreen> {
                 : ListView.builder(
                     itemCount: ordersCtrl.orders.length,
                     itemBuilder: (BuildContext context, int index) {
-                      print('i am building ${index}');
                       return CartableOrderCard(
                           isNextOrder: index == 0 ? true : false,
                           order: ordersCtrl.orders[index]);
