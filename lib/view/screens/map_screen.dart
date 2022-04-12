@@ -6,8 +6,6 @@ import 'package:provider/provider.dart';
 
 import '../../controllers/map_provider.dart';
 
-import '../../dummy_data/dummy_routes.dart';
-
 import '../widgets/map_north_button.dart';
 import '../widgets/next_order_timeline_and_detail.dart';
 
@@ -25,14 +23,6 @@ class _MapScreenState extends State<MapScreen> {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
   }
 
-  final List<LatLng> _destinations = [
-    LatLng(dummyRoutes.last[1], dummyRoutes.last[0]),
-  ];
-
-  final List<LatLng> _nextRouteLatLongs = dummyRoutes
-      .map((latLongList) => LatLng(latLongList[1], latLongList[0]))
-      .toList();
-
   Marker _truckMarker(LatLng location) {
     return Marker(
       point: location,
@@ -44,14 +34,10 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final MapProvider mapProvider = Provider.of<MapProvider>(context);
     mapProvider.creatingMapController();  // need to create new map Controller
+    // mapProvider.setMyFakeLocation();
 
     return Column(
       children: [
@@ -77,7 +63,7 @@ class _MapScreenState extends State<MapScreen> {
                   ),
                   PolylineLayerOptions(polylines: [
                     Polyline(
-                      points: _nextRouteLatLongs,
+                      points: mapProvider.nextOrderPath,
                       borderStrokeWidth: 2.5,
                       strokeWidth: 2,
                       color: Theme.of(context).colorScheme.secondary,
@@ -87,22 +73,16 @@ class _MapScreenState extends State<MapScreen> {
                   MarkerLayerOptions(
                     markers: [
                       _truckMarker(mapProvider.myLocation),
-                      ..._destinations
-                          .map((point) => Marker(
-                                point: point,
-                                width: 100,
-                                height: 100,
-                                builder: (context) => Icon(
-                                  Icons.location_pin,
-                                  size: _destinations.indexOf(point) == 0
-                                      ? 36
-                                      : 28,
-                                  color: _destinations.indexOf(point) == 0
-                                      ? Theme.of(context).colorScheme.secondary
-                                      : Colors.grey,
-                                ),
-                              ))
-                          .toList(),
+                      Marker(
+                        point: mapProvider.nextOrderPath.last,
+                        width: 100,
+                        height: 100,
+                        builder: (context) => Icon(
+                          Icons.location_pin,
+                          size: 36,
+                          color: Theme.of(context).colorScheme.secondary,
+                        ),
+                      )
                     ],
                   ),
                 ],

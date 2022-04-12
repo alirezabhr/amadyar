@@ -1,9 +1,15 @@
+import 'package:amadyar/controllers/server_data.dart';
+import 'package:amadyar/models/order.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 
 class MapProvider with ChangeNotifier {
+  late Order _nextOrder;
+  late List<LatLng> _nextOrderPath;
+
   final double _minMapZoom = 8;
   final double _maxMapZoom = 18;
 
@@ -14,7 +20,7 @@ class MapProvider with ChangeNotifier {
 
   MapController _mapController = MapController();
 
-  void creatingMapController () {
+  void creatingMapController() {
     _mapController = MapController();
   }
 
@@ -73,7 +79,36 @@ class MapProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> getDriverNextOrder() async {
+    Dio dio = await ServerData().getDio();
+    var response = await dio.get('haul/next_order/');
+    Map<String, dynamic> data = response.data;
+    _nextOrder = Order(
+      id: data['id'],
+      title: data['title'],
+      statusText: data['status'],
+      weight: data['weight'],
+      startTw: data['start_tw'],
+      endTw: data['end_tw'],
+      estimationArrival: data['estimation_arrival'],
+      estimationDepart: data['estimation_depart'],
+    );
+
+    _nextOrderPath = [];
+    response.data['paths'].forEach((data) {
+      _nextOrderPath.add(LatLng(data['latitude'], data['longitude']));
+    });
+    notifyListeners();
+  }
+
+  void setMyFakeLocation() {
+    _myLocation = _nextOrderPath.first;
+    // notifyListeners();
+  }
+
   LatLng get myLocation => _myLocation;
+
+  Order get nextOrder => _nextOrder;
 
   double get minMapZoom => _minMapZoom;
 
@@ -84,4 +119,6 @@ class MapProvider with ChangeNotifier {
   LatLng get mapCenter => _mapCenter;
 
   double get zoom => _zoom;
+
+  List<LatLng> get nextOrderPath => _nextOrderPath;
 }
