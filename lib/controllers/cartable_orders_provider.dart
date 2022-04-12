@@ -1,6 +1,8 @@
+import 'package:amadyar/controllers/map_provider.dart';
 import 'package:amadyar/controllers/server_data.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
 
 import '../models/order.dart';
 
@@ -9,15 +11,17 @@ class CartableOrdersProvider with ChangeNotifier {
 
   List<Order> get orders => [..._orders];
 
-  void orderStarted() {
+  void orderStarted(BuildContext ctx) {
     final Order order = _orders.first;
     order.changeStatus(OrderStatus.IN_PROGRESS);
+    Provider.of<MapProvider>(ctx, listen: false).runTracker(order.id);
     notifyListeners();
   }
 
-  void orderArrived() {
+  void orderArrived(BuildContext ctx) {
     final Order order = _orders.first;
     order.changeStatus(OrderStatus.ARRIVED);
+    Provider.of<MapProvider>(ctx, listen: false).stopTracker(order.id);
     notifyListeners();
   }
 
