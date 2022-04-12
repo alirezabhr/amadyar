@@ -17,11 +17,31 @@ class Order with ChangeNotifier {
   Store? store;
   String title;
   late OrderStatus status;
-  int weight;
-  DateTime startTw;
-  DateTime endTw;
+  double? weight;
+  late Jalali startTw;
+  late Jalali endTw;
   late Jalali estimationArrival;
   late Jalali estimationDepart;
+
+
+  Order({
+    required this.id,
+    this.storage,
+    this.store,
+    required this.title,
+    required String statusText,
+    required this.weight,
+    required double startTw,
+    required double endTw,
+    required double estimationArrival,
+    required double estimationDepart,
+  }) {
+    status = _convertStrToStatus(statusText);
+    this.startTw = jalaliFromUnixDouble(startTw);
+    this.endTw = jalaliFromUnixDouble(endTw);
+    this.estimationArrival = jalaliFromUnixDouble(estimationArrival);
+    this.estimationDepart = jalaliFromUnixDouble(estimationDepart);
+  }
 
   OrderStatus _convertStrToStatus(String strStatus) {
     OrderStatus s = OrderStatus.ASSIGNED;
@@ -42,21 +62,8 @@ class Order with ChangeNotifier {
     return s;
   }
 
-  Order({
-    required this.id,
-    this.storage,
-    this.store,
-    required this.title,
-    required String statusText,
-    required this.weight,
-    required this.startTw,
-    required this.endTw,
-    required DateTime estimationArrival,
-    required DateTime estimationDepart,
-  }) {
-    status = _convertStrToStatus(statusText);
-    this.estimationArrival = Jalali.fromDateTime(estimationArrival);
-    this.estimationDepart = Jalali.fromDateTime(estimationDepart);
+  Jalali jalaliFromUnixDouble(double unixDateTime) {
+    return Jalali.fromDateTime(DateTime.fromMillisecondsSinceEpoch(unixDateTime.toInt()));
   }
 
   void changeStatus(OrderStatus newStatus) {
