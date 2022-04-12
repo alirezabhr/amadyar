@@ -26,6 +26,16 @@ class CartableOrdersProvider with ChangeNotifier {
       estimationArrival: DateTime.now().add(Duration(hours: 6)),
       estimationDepart: DateTime.now().add(Duration(hours: 6, minutes: 30)),
     ),
+    Order(
+      id: 1,
+      title: '۴تا دوغ آبعلی',
+      statusText: 'AS',
+      weight: 12,
+      startTw: DateTime.now(),
+      endTw: DateTime.now(),
+      estimationArrival: DateTime.now().add(Duration(hours: 2)),
+      estimationDepart: DateTime.now().add(Duration(hours: 3)),
+    ),
   ];
 
   List<Order> get orders => [..._orders];
@@ -51,6 +61,7 @@ class CartableOrdersProvider with ChangeNotifier {
 
   Future<void> updateOrders() async {
     //api call to get orders
+    print('hey i was called');
     Dio dio = await ServerData().getDio();
     var url = '${ServerData.serverBaseAPI}/haul/order/';
     try{

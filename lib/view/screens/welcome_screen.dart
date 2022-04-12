@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:amadyar/controllers/auth.dart';
+import 'package:amadyar/controllers/cartable_orders_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -26,6 +27,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
     if (_userAuthenticated) {
       // TODO: add error handling if not connected to wifi
       Provider.of<User>(context, listen: false).updateUser();
+      Provider.of<CartableOrdersProvider>(context,listen: false).updateOrders();
       Provider.of<HistoryOrdersProvider>(context, listen: false).updateOrders();
       Navigator.pushReplacementNamed(context, PageRoutes.mainPage);
     } else {
