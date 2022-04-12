@@ -26,9 +26,9 @@ class _WelcomeScreenState extends State<WelcomeScreen>
     bool _userAuthenticated = await Auth.isLoggedIn();
     if (_userAuthenticated) {
       // TODO: add error handling if not connected to wifi
-      Provider.of<User>(context, listen: false).updateUser();
-      Provider.of<CartableOrdersProvider>(context,listen: false).updateOrders();
-      Provider.of<HistoryOrdersProvider>(context, listen: false).updateOrders();
+      await Provider.of<User>(context, listen: false).updateUser();
+      await Provider.of<CartableOrdersProvider>(context,listen: false).updateOrders();
+      await Provider.of<HistoryOrdersProvider>(context, listen: false).updateOrders();
       Navigator.pushReplacementNamed(context, PageRoutes.mainPage);
     } else {
       Navigator.pushReplacementNamed(context, PageRoutes.phoneNumberScreen);
