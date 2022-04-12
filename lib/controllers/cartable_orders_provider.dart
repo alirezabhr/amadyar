@@ -5,38 +5,7 @@ import 'package:flutter/foundation.dart';
 import '../models/order.dart';
 
 class CartableOrdersProvider with ChangeNotifier {
-  List<Order> _orders = [
-    Order(
-      id: 1,
-      title: '۴تا دوغ آبعلی',
-      statusText: 'AS',
-      weight: 12,
-      startTw: DateTime.now(),
-      endTw: DateTime.now(),
-      estimationArrival: DateTime.now().add(Duration(hours: 2)),
-      estimationDepart: DateTime.now().add(Duration(hours: 3)),
-    ),
-    Order(
-      id: 12,
-      title: '۶تا ماست موسیر رامک',
-      statusText: 'DL',
-      weight: 12,
-      startTw: DateTime.now(),
-      endTw: DateTime.now(),
-      estimationArrival: DateTime.now().add(Duration(hours: 6)),
-      estimationDepart: DateTime.now().add(Duration(hours: 6, minutes: 30)),
-    ),
-    Order(
-      id: 1,
-      title: '۴تا دوغ آبعلی',
-      statusText: 'AS',
-      weight: 12,
-      startTw: DateTime.now(),
-      endTw: DateTime.now(),
-      estimationArrival: DateTime.now().add(Duration(hours: 2)),
-      estimationDepart: DateTime.now().add(Duration(hours: 3)),
-    ),
-  ];
+  List<Order> _orders = [];
 
   List<Order> get orders => [..._orders];
 
@@ -60,16 +29,24 @@ class CartableOrdersProvider with ChangeNotifier {
   }
 
   Future<void> updateOrders() async {
-    //api call to get orders
-    print('hey i was called');
     Dio dio = await ServerData().getDio();
-    var url = '${ServerData.serverBaseAPI}/haul/order/';
-    try{
-      var response = await dio.get(url);
-      //assign response to orders and handel errors  
-    } catch (e){
-      // do nothing? or get orders from cache
-    }
+    var response = await dio.get('/haul/order/uncompleted/');
+
+    _orders = [];
+    response.data.forEach((data) {
+      Order order = Order(
+        id: data['id'],
+        title: data['title'],
+        statusText: data['status'],
+        weight: data['weight'],
+        startTw: data['start_tw'],
+        endTw: data['end_tw'],
+        estimationArrival: data['estimation_arrival'],
+        estimationDepart: data['estimation_depart'],
+      );
+      _orders.add(order);
+    });
+
     notifyListeners();
   } 
 

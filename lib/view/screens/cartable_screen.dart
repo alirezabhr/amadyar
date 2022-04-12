@@ -18,25 +18,26 @@ class _CartableScreenState extends State<CartableScreen> {
         Provider.of<CartableOrdersProvider>(context);
 
     return Container(
-        width: MediaQuery.of(context).size.width,
-        padding: const EdgeInsets.all(8.0),
-        child: RefreshIndicator(
-            onRefresh: ordersCtrl.updateOrders,
-            child: ordersCtrl.orders.isEmpty
-                ? const Center(
-                    child: Text(
-                      "سفارشی موجود نیست",
-                      style: TextStyle(fontSize: 20),
-                    ),
-                  )
-                : ListView.builder(
-                    itemCount: ordersCtrl.orders.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      print('i am building ${index}');
-                      return CartableOrderCard(
-                          isNextOrder: index == 0 ? true : false,
-                          order: ordersCtrl.orders[index]);
-                    },
-                  )));
+      width: MediaQuery.of(context).size.width,
+      padding: const EdgeInsets.all(8.0),
+      child: RefreshIndicator(
+        onRefresh: ordersCtrl.updateOrders,
+        child: ordersCtrl.orders.isEmpty
+            ? const Center(
+                child: Text(
+                  "سفارشی موجود نیست",
+                  style: TextStyle(fontSize: 20),
+                ),
+              )
+            : ListView.builder(
+                itemCount: ordersCtrl.orders.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return CartableOrderCard(
+                      isNextOrder: index == 0 ? true : false,
+                      order: ordersCtrl.orders[index]);
+                },
+              ),
+      ),
+    );
   }
 }
