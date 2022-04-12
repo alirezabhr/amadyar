@@ -11,24 +11,40 @@ class CartableOrdersProvider with ChangeNotifier {
 
   List<Order> get orders => [..._orders];
 
-  void orderStarted(BuildContext ctx) {
+  bool _isSubmitting = false;
+
+  bool get isSubmitting => _isSubmitting;
+
+  void changeIsSubmitting(bool newValue) {
+    _isSubmitting = newValue;
+    notifyListeners();
+  }
+
+  void orderStarted(BuildContext ctx) async {
+    changeIsSubmitting(true);
     final Order order = _orders.first;
-    order.changeStatus(OrderStatus.IN_PROGRESS);
+    await order.changeStatus(OrderStatus.IN_PROGRESS);
     Provider.of<MapProvider>(ctx, listen: false).runTracker(order.id);
+    changeIsSubmitting(false);
     notifyListeners();
   }
 
-  void orderArrived(BuildContext ctx) {
+  void orderArrived(BuildContext ctx) async {
+    changeIsSubmitting(true);
     final Order order = _orders.first;
-    order.changeStatus(OrderStatus.ARRIVED);
+    await order.changeStatus(OrderStatus.ARRIVED);
     Provider.of<MapProvider>(ctx, listen: false).stopTracker(order.id);
+    changeIsSubmitting(false);
     notifyListeners();
   }
 
-  void orderDelivered() {
+  void orderDelivered(BuildContext ctx) async {
+    changeIsSubmitting(true);
     final Order order = _orders.first;
-    order.changeStatus(OrderStatus.DELIVERED);
+    await order.changeStatus(OrderStatus.DELIVERED);
+    changeIsSubmitting(false);
     _orders.removeAt(0);
+    Provider.of<MapProvider>(ctx, listen: false).getDriverNextOrder();
     notifyListeners();
   }
 
@@ -52,6 +68,5 @@ class CartableOrdersProvider with ChangeNotifier {
     });
 
     notifyListeners();
-  } 
-
+  }
 }
