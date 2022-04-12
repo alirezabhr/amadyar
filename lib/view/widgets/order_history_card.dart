@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shamsi_date/shamsi_date.dart';
 import '../../models/order.dart';
 
 class OrderHistoryCard extends StatelessWidget {
@@ -39,15 +40,41 @@ class OrderHistoryCard extends StatelessWidget {
     return null;
   }
 
+  String jalaliFormattedDate(Jalali dateTime) {
+    return '${dateTime.formatter.wN}، ${dateTime.formatter.d} ${dateTime
+        .formatter.mN}';
+  }
+
+  String formattedTime(Jalali dateTime) {
+    return 'ساعت ${dateTime.hour}:${dateTime.minute}';
+  }
+
+  Widget timingColumn(String title, Jalali dateTime) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+          Text(
+              '${jalaliFormattedDate(dateTime)} - ${formattedTime(dateTime)}'),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 12.0),
-      margin:  const EdgeInsets.symmetric(horizontal: 18.0),
+      margin: const EdgeInsets.symmetric(horizontal: 18.0),
       child: Card(
         color: map[order.status]!["color"] as Color,
         child: Padding(
-          padding: const EdgeInsets.all(8),
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
           child: Column(
             children: [
               Column(
@@ -56,25 +83,21 @@ class OrderHistoryCard extends StatelessWidget {
                   originAddressText,
                   destinationAddressText,
                   Text("مرسوله: ${order.title}"),
-                  Text("وزن: ${order.weight}"),
-                  Text(
-                    "${order.startTw}",
-                    textDirection: TextDirection.rtl,
-                  ),
-                  Text(
-                    "${order.endTw}",
-                    textDirection: TextDirection.rtl,
-                  ),
+                  order.weight != null ? Text("وزن: ${order.weight} kg") : null,
+                  timingColumn('زمان پیشنهادی تحویل:', order.estimationArrival),
+                  timingColumn('زمان پیشنهادی تخلیه:', order.estimationDepart),
+                  // TODO add start and end real time if exist
                 ]
                     .map(
-                      (e) => Padding(
+                      (e) =>
+                      Padding(
                         padding: const EdgeInsets.all(4),
                         child: Align(
                           alignment: Alignment.centerRight,
                           child: e,
                         ),
                       ),
-                    )
+                )
                     .toList(),
               ),
               Align(
