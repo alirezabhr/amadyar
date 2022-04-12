@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:amadyar/controllers/auth.dart';
 import 'package:amadyar/controllers/cartable_orders_provider.dart';
+import 'package:amadyar/controllers/map_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -29,6 +30,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
       await Provider.of<User>(context, listen: false).updateUser();
       await Provider.of<CartableOrdersProvider>(context,listen: false).updateOrders();
       await Provider.of<HistoryOrdersProvider>(context, listen: false).updateOrders();
+      await Provider.of<MapProvider>(context, listen: false).getDriverNextOrder();
       Navigator.pushReplacementNamed(context, PageRoutes.mainPage);
     } else {
       Navigator.pushReplacementNamed(context, PageRoutes.phoneNumberScreen);
