@@ -81,14 +81,24 @@ class CartableOrderCard extends StatelessWidget {
                             ordersController.orderArrived(context);
                           } else if (order.status == OrderStatus.ARRIVED) {
                             // delivered
-                            ordersController.orderDelivered();
+                            ordersController.orderDelivered(context);
                           }
                         }
                       },
-                      child: Text(
-                        buttonText,
-                        style: const TextStyle(color: Colors.white),
-                      ),
+                      child: ordersController.isSubmitting
+                          ? Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 24.0),
+                            width: 20,
+                            height: 20,
+                            child: const CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 3,
+                              ),
+                          )
+                          : Text(
+                              buttonText,
+                              style: const TextStyle(color: Colors.white),
+                            ),
                       style: ElevatedButton.styleFrom(
                         primary: Colors.blueAccent,
                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
