@@ -14,7 +14,7 @@ class MapProvider with ChangeNotifier {
   List<OrderLog> _orderLogs = [];
 
   late Order _nextOrder;
-  late List<LatLng> _nextOrderPath;
+  late List<LatLng> _nextOrderPath = [];
 
   final double _minMapZoom = 8;
   final double _maxMapZoom = 18;
@@ -61,11 +61,11 @@ class MapProvider with ChangeNotifier {
     double _positionLat = position != null ? position.latitude : 0;
     double _positionLong = position != null ? position.longitude : 0;
 
+    changeMyLocation(_positionLat, _positionLong);
     _mapCenter = _myLocation;
     _zoom = 13;
     _mapController.move(_mapCenter, _zoom);
-
-    changeMyLocation(_positionLat, _positionLong);
+    // notifyListeners();
   }
 
   Future<Position?> _getCurrentPosition() async {
@@ -94,7 +94,7 @@ class MapProvider with ChangeNotifier {
         latitude: _lat,
         longitude: _long,
         action: action,
-        dateTime: DateTime.now(),
+        // dateTime: DateTime.now(),
       ),
     );
   }
@@ -120,13 +120,18 @@ class MapProvider with ChangeNotifier {
       _logsData.add(log.toMap());
     }
 
-    await _submitOrderLogs(_logsData);
+    await _submitOrderLogs(orderId, _logsData);
   }
 
-  Future<void> _submitOrderLogs(List<Map> data) async {
+  Future<void> _submitOrderLogs(int orderId, List<Map> logsData) async {
     Dio dio = await ServerData().getDio();
+    Map data = {'logs': logsData};
+
     try {
-      await dio.post('/haul/order/uncompleted/', data: data);
+      await dio.post(
+        '/haul/order/create_orderlogs/$orderId/',
+        data: data,
+      );
     } catch (e) {
       print('problem in submitting order logs');
     }
@@ -134,28 +139,36 @@ class MapProvider with ChangeNotifier {
 
   void changeMyLocation(double lat, double long) {
     _myLocation = LatLng(lat, long);
+    print(_myLocation);
     notifyListeners();
   }
 
   Future<void> getDriverNextOrder() async {
-    Dio dio = await ServerData().getDio();
-    var response = await dio.get('haul/next_order/');
-    Map<String, dynamic> data = response.data;
-    _nextOrder = Order(
-      id: data['id'],
-      title: data['title'],
-      statusText: data['status'],
-      weight: data['weight'],
-      startTw: data['start_tw'],
-      endTw: data['end_tw'],
-      estimationArrival: data['estimation_arrival'],
-      estimationDepart: data['estimation_depart'],
-    );
+    try {
+      Dio dio = await ServerData().getDio();
+      var response = await dio.get('haul/next_order/');
 
-    _nextOrderPath = [];
-    response.data['paths'].forEach((data) {
-      _nextOrderPath.add(LatLng(data['latitude'], data['longitude']));
-    });
+      print(response.data);
+
+      Map<String, dynamic> data = response.data;
+      _nextOrder = Order(
+        id: data['id'],
+        title: data['title'],
+        statusText: data['status'],
+        weight: data['weight'],
+        startTw: data['start_tw'],
+        endTw: data['end_tw'],
+        estimationArrival: data['estimation_arrival'],
+        estimationDepart: data['estimation_depart'],
+      );
+
+      _nextOrderPath = [];
+      response.data['paths'].forEach((data) {
+        _nextOrderPath.add(LatLng(data['latitude'], data['longitude']));
+      });
+    } catch (_) {
+      print('next order not found');
+    }
     notifyListeners();
   }
 
