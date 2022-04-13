@@ -33,11 +33,68 @@ class _MapScreenState extends State<MapScreen> {
     );
   }
 
+  List<LayerOptions> _mapLayers(MapProvider mapProvider) {
+    print('mapLayers');
+    List<LayerOptions> layers = [
+      TileLayerOptions(
+        minZoom: mapProvider.minMapZoom,
+        maxZoom: mapProvider.maxMapZoom,
+        urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+        subdomains: ['a', 'b', 'c'],
+      ),
+    ];
+    print('before poly lines');
+    if (mapProvider.nextOrderPath.isNotEmpty) {
+      layers.add(PolylineLayerOptions(polylines: [
+        Polyline(
+          points: mapProvider.nextOrderPath,
+          borderStrokeWidth: 2.5,
+          strokeWidth: 2,
+          color: Theme.of(context).colorScheme.secondary,
+          borderColor: Theme.of(context).colorScheme.tertiary,
+        ),
+      ]));
+    }
+    print('after poly lines');
+
+    final MarkerLayerOptions markerLayerOptions = MarkerLayerOptions(
+      markers: [
+        _truckMarker(mapProvider.myLocation),
+      ],
+    );
+
+    if (mapProvider.nextOrderPath.isNotEmpty) {
+      markerLayerOptions.markers.add(Marker(
+        point: mapProvider.nextOrderPath.last,
+        width: 100,
+        height: 100,
+        builder: (context) => Icon(
+          Icons.location_pin,
+          size: 36,
+          color: Theme.of(context).colorScheme.secondary,
+        ),
+      ));
+    }
+
+    layers.add(markerLayerOptions);
+
+    return layers;
+  }
+
+  @override
+  void deactivate() {
+    print('deactivate');
+    Provider.of<MapProvider>(context, listen: false).creatingMapController();
+    super.deactivate();
+  }
+
   @override
   Widget build(BuildContext context) {
     final MapProvider mapProvider = Provider.of<MapProvider>(context);
-    mapProvider.creatingMapController();  // need to create new map Controller
-    // mapProvider.setMyFakeLocation();
+    print('building map screen');
+    if (mapProvider.nextOrderPath.isNotEmpty) { ///important
+      mapProvider.setMyFakeLocation();
+    }
 
     return Column(
       children: [
@@ -53,39 +110,7 @@ class _MapScreenState extends State<MapScreen> {
                     MarkerClusterPlugin(),
                   ],
                 ),
-                layers: [
-                  TileLayerOptions(
-                    minZoom: mapProvider.minMapZoom,
-                    maxZoom: mapProvider.maxMapZoom,
-                    urlTemplate:
-                        'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                    subdomains: ['a', 'b', 'c'],
-                  ),
-                  PolylineLayerOptions(polylines: [
-                    Polyline(
-                      points: mapProvider.nextOrderPath,
-                      borderStrokeWidth: 2.5,
-                      strokeWidth: 2,
-                      color: Theme.of(context).colorScheme.secondary,
-                      borderColor: Theme.of(context).colorScheme.tertiary,
-                    ),
-                  ]),
-                  MarkerLayerOptions(
-                    markers: [
-                      _truckMarker(mapProvider.myLocation),
-                      Marker(
-                        point: mapProvider.nextOrderPath.last,
-                        width: 100,
-                        height: 100,
-                        builder: (context) => Icon(
-                          Icons.location_pin,
-                          size: 36,
-                          color: Theme.of(context).colorScheme.secondary,
-                        ),
-                      )
-                    ],
-                  ),
-                ],
+                layers: _mapLayers(mapProvider),
               ),
               Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -186,9 +211,11 @@ class _MapScreenState extends State<MapScreen> {
             ],
           ),
         ),
-        const NextOrderTimelineAndDetail(
-          destinationName: 'بقالی حسن آقا',
-          orderTitle: 'دوغ آبعلی',
+        Container(
+          child: mapProvider.nextOrderPath.isEmpty ? null : const NextOrderTimelineAndDetail(
+            destinationName: 'بقالی حسن آقا',
+            orderTitle: 'دوغ آبعلی',
+          ),
         ),
       ],
     );
