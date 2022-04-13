@@ -1,8 +1,11 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
 import 'package:amadyar/models/storage.dart';
 import 'package:amadyar/models/store.dart';
 import 'package:shamsi_date/shamsi_date.dart';
+
+import '../controllers/server_data.dart';
 
 enum OrderStatus {
   ASSIGNED,
@@ -66,8 +69,25 @@ class Order with ChangeNotifier {
     return Jalali.fromDateTime(DateTime.fromMillisecondsSinceEpoch(unixDateTime.toInt()));
   }
 
-  void changeStatus(OrderStatus newStatus) {
-    // TODO call api to change status
+  String _statusToStr(OrderStatus newStatus) {
+    switch (newStatus) {
+      case OrderStatus.ASSIGNED:
+        return 'AS';
+      case OrderStatus.ARRIVED:
+        return 'AR';
+      case OrderStatus.IN_PROGRESS:
+        return 'IP';
+      case OrderStatus.DELIVERED:
+        return 'DL';
+    }
+  }
+
+  Future<void> changeStatus(OrderStatus newStatus) async {
+    Dio dio = await ServerData().getDio();
+    Map data = {'status': _statusToStr(newStatus)};
+    var response = await dio.post('/haul/order/change_status/$id/', data: data);
+    print(response.data);
+
     status = newStatus;
     notifyListeners();
   }
