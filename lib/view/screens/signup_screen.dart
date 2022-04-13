@@ -1,4 +1,5 @@
 import 'package:amadyar/controllers/auth.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -79,7 +80,7 @@ class _SignupScreenState extends State<SignupScreen> {
                               border: OutlineInputBorder(),
                               label: Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 8.0),
-                                child: Text('نام و نام خانوادگی'),
+                                child: Text('نام خانوادگی'),
                               ),
                               contentPadding:
                                   EdgeInsets.symmetric(horizontal: 6.0)),
@@ -132,13 +133,18 @@ class _SignupScreenState extends State<SignupScreen> {
 
                         if (_formKey.currentState!.validate()) {
                           try {
-                            await Auth.signup(context,
-                                fistName: _firstNameController.text,
-                                lastName: _lastNameController.text,
-                                companyCode: _companyCodeController.text);
-                          } catch (e) {
+                            await Auth.signup(
+                              context,
+                              fistName: _firstNameController.text,
+                              lastName: _lastNameController.text,
+                              companyCode: _companyCodeController.text,
+                            );
+                          } on DioError catch (e) {
+                            print(e.response);
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('اطلاعات وارد شده اشتباه است')),
+                              SnackBar(
+                                content: Text('اطلاعات وارد شده اشتباه است'),
+                              ),
                             );
                           }
                         }

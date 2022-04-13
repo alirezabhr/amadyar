@@ -1,10 +1,11 @@
 import 'package:amadyar/controllers/history_orders_provider.dart';
-import 'package:amadyar/models/order.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dio/dio.dart';
 
+import 'cartable_orders_provider.dart';
+import 'map_provider.dart';
 import 'server_data.dart';
 
 import '../../routes.dart';
@@ -54,6 +55,7 @@ class Auth {
 
   static Future<void> phoneNumberExists(
       String phoneNumber, BuildContext context) async {
+    print('here');
 
     var url = '${ServerData.serverBaseAPI}/accounts/phone_number/';
     var response = await dio.post(
@@ -61,9 +63,11 @@ class Auth {
       data: {'phone_number': '+98$phoneNumber'},
     );
 
+    print('here2');
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString(SharedPreferencesKeys.phoneNumber, phoneNumber);
     bool exists = response.data['user_exists'];
+    print('here3');
 
     Navigator.pushReplacementNamed(context, PageRoutes.otpScreen,
         arguments: {'userExists': exists});
@@ -94,7 +98,10 @@ class Auth {
     );
 
     await saveUserDataInSharedPreference(response.data);
-    await Provider.of<HistoryOrdersProvider>(context).updateOrders();
+    await Provider.of<User>(context, listen: false).updateUser();
+    await Provider.of<CartableOrdersProvider>(context,listen: false).updateOrders();
+    await Provider.of<HistoryOrdersProvider>(context, listen: false).updateOrders();
+    await Provider.of<MapProvider>(context, listen: false).getDriverNextOrder();
     Navigator.pushReplacementNamed(context, PageRoutes.mainPage);
   }
 
@@ -115,6 +122,11 @@ class Auth {
     });
 
     await saveUserDataInSharedPreference(response.data);
+
+    await Provider.of<User>(context, listen: false).updateUser();
+    await Provider.of<CartableOrdersProvider>(context,listen: false).updateOrders();
+    await Provider.of<HistoryOrdersProvider>(context, listen: false).updateOrders();
+    await Provider.of<MapProvider>(context, listen: false).getDriverNextOrder();
     Navigator.pushReplacementNamed(context, PageRoutes.mainPage);
   }
 
