@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 enum LogAction {
   STARTED,
   ON_THE_WAY,
@@ -8,16 +10,17 @@ class OrderLog {
   final int orderId;
   final double latitude;
   final double longitude;
-  final DateTime dateTime;
+  late final DateTime dateTime;
   final LogAction action;
 
   OrderLog({
     required this.orderId,
     required this.latitude,
     required this.longitude,
-    required this.dateTime,
     required this.action,
-  });
+  }) {
+    dateTime = DateTime.now();
+  }
 
   String get _actionStr {
     if (action == LogAction.STARTED) {
@@ -31,10 +34,9 @@ class OrderLog {
 
   Map<String, dynamic> toMap() {
     return {
-      'related_order': orderId,
       'longitude': longitude,
       'latitude': latitude,
-      'current_datetime': dateTime,
+      'current_datetime': DateFormat('yyyy-MM-ddTH:m:s').format(dateTime),
       'action': _actionStr,
     };
   }
